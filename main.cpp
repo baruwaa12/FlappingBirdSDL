@@ -1,6 +1,14 @@
 //basic init function
 #include <SDL.h>
 #include <iostream>
+#include "bird.hpp"
+
+
+// Load image as a texture
+SDL_Texture *loadTexture(std::string path);
+
+// Window to render to
+SDL_Renderer *gameRenderer = NULL;
 
 int main()
 {
@@ -10,54 +18,48 @@ int main()
   int b = 0;
 
   bool sec1 = true;
-  //end of colour loop var
-
-
+  const static int SCREEN_HEIGHT = 480  
+  const static int SCREEN_WIDTH = 640
+  
   SDL_Window* window;
   SDL_Renderer* renderer;
 
-  window = SDL_CreateWindow( "Hello World!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 2000, 2000, SDL_WINDOW_BORDERLESS);
+  window = SDL_CreateWindow( "Flappy Chicken", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
 
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  // loading bird texture
+  SDL_Surface* birdSurface = SDL_LoadBMP("wingUp.bmp");
+
+  // Did the bird surface load?
+  if( birdSurface == NULL){
+    std::cout<<"Bird surface not loaded" << std::endl;
+  }
+  else{
+    std::cout<<"Bird surface loaded" << std::endl;
+  }
+
+  // New instance of my Bird Class
+  Bird flappy = new flappy(50,50);
+  flappy.wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
   
   while (true) {
-    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+    
+    SDL_Rect* birdReact = new SDL_Rect();
+    birdReact->x = 50;
+    birdReact->y = 50;
+    birdReact->h = 32;
+    birdReact->w = 32;
 
     SDL_RenderClear(renderer);
-    
+        
+    SDL_RenderCopy(renderer, flappy.wingUpTexture, NULL, birdReact);
+
     SDL_RenderPresent(renderer);
     
-    SDL_Delay(40);
-
-
-    // colour loop, not the best but gets the job done.
-    if (g < 255 && sec1 == true) {
-      g++;
-    }
-    else if (g >= 255 && r > 0) {
-      r -= 1;
-    }
-    else if (b < 255 && r <= 0) {
-      b++;
-    }
-    
-    if (b >= 255 && g > 0) {
-      sec1 = false;
-      g -= 1;
-    }
-    if (g <= 0 && sec1 == false && r < 255) {
-      r++;
-    }
-    if (sec1 == false && r == 255) {
-      if (b != 0) {
-        b -= 1;
-      }
-      else {
-        sec1 = true;
-      }
-    }
   }
-  
+
 
   SDL_DestroyWindow( window );
   
@@ -65,3 +67,10 @@ int main()
 
   return 0;
 }
+
+// Todo
+// Commit in new repo or overwrite existing repo
+// Switch image every while
+// Get bird to drop by gravity
+// When I tab on the space bar bird goes up
+// --------------------------------
