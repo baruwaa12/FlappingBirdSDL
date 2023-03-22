@@ -15,6 +15,7 @@ void Bird::setX(int value){
   x = value;
 }
 
+
 void Bird::setY(int value){
   y = value;
 }

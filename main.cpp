@@ -18,8 +18,8 @@ int main()
   int b = 0;
 
   bool sec1 = true;
-  const static int SCREEN_HEIGHT = 480  
-  const static int SCREEN_WIDTH = 640
+  const static int SCREEN_HEIGHT = 480;  
+  const static int SCREEN_WIDTH = 640;
   
   SDL_Window* window;
   SDL_Renderer* renderer;
@@ -32,19 +32,29 @@ int main()
   // loading bird texture
   SDL_Surface* birdSurface = SDL_LoadBMP("wingUp.bmp");
 
+  SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
+
   // Did the bird surface load?
-  if( birdSurface == NULL){
+  if( birdSurface == NULL) {
     std::cout<<"Bird surface not loaded" << std::endl;
   }
+  if (birdSurface2 == NULL ) {
+    std::cout<<"Bird surface 2 not loaded" << std::endl;
+  }
   else{
-    std::cout<<"Bird surface loaded" << std::endl;
+    std::cout<<"Bird surfaces loaded" << std::endl;
   }
 
   // New instance of my Bird Class
-  Bird flappy = new flappy(50,50);
-  flappy.wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
+  Bird* flappy = new Bird(50,50);
+
+  flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
+
+  flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
   
   while (true) {
+
+   int TimeStarted = SDL_GetTicks();
     
     SDL_Rect* birdReact = new SDL_Rect();
     birdReact->x = 50;
@@ -54,12 +64,11 @@ int main()
 
     SDL_RenderClear(renderer);
         
-    SDL_RenderCopy(renderer, flappy.wingUpTexture, NULL, birdReact);
+    SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
 
     SDL_RenderPresent(renderer);
     
   }
-
 
   SDL_DestroyWindow( window );
   
