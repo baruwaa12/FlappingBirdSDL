@@ -3,18 +3,23 @@
 
 class Bird{
   private:
-    int x;
-    int y;
-    void tick();
-    void draw();
+    float x;
+    float y;
+    float v;
+    float g;
+    
   public:
-    Bird(int x, int y);
-    void fly();
-    void setX(int value);
-    void setY(int value);
-    int getX();
-    int getY();
+    Bird(float x, float y, float v, float g);
+    void flyDown();
+    void flyUp();
+    void setX(float value);
+    void setY(float value);
+    void setV(float value);
+    void setG(float value);
+    float getX();
+    float getY();
+    float getV();
+    float getG();
     SDL_Texture* wingUpTexture;
     SDL_Texture* wingDownTexture;
-
 };

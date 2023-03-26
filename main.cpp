@@ -46,19 +46,39 @@ int main()
   }
 
   // New instance of my Bird Class
-  Bird* flappy = new Bird(50,50);
+  Bird* flappy = new Bird(50,50,10.5,0.3);
 
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
   flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
-  
-  while (true) {
 
-   int TimeStarted = SDL_GetTicks();
+  SDL_Event event;
+  while (true) {
+    // Listen for the space bar key event
+    // If the Space Bar is pressed. Call the 
+    while( SDL_PollEvent(&event))
+    {
+      // User requests quit
+      if (event.type == SDL_KEYDOWN )
+      {
+        switch (event.key.keysym.sym) 
+        {
+          case SDLK_SPACE:
+            std::cout<<"Space Bar Hit" << std::endl;
+            flappy->flyUp();
+            break;
+          default:
+            break;
+        }
+      }
+      // Not a key down - need to move on to the game loop
+      break;
+    }
     
+    int TimeStarted = SDL_GetTicks();
     SDL_Rect* birdReact = new SDL_Rect();
-    birdReact->x = 50;
-    birdReact->y = 50;
+    birdReact->x = flappy->getX();
+    birdReact->y = flappy->getY();
     birdReact->h = 32;
     birdReact->w = 32;
 
@@ -67,6 +87,8 @@ int main()
     SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
 
     SDL_RenderPresent(renderer);
+
+    flappy->flyDown();
     
   }
 
@@ -78,8 +100,9 @@ int main()
 }
 
 // Todo
-// Commit in new repo or overwrite existing repo
-// Switch image every while
-// Get bird to drop by gravity
-// When I tab on the space bar bird goes up
+// [ ] Commit in my new repo or overwrite an one of my old repos
+// [x] Get bird to drop by gravity 
+// [ ] When I tab on the space bar bird goes up
+// [ ] Pipe scroll on the screen movingfrom the right to left
+// { }
 // --------------------------------

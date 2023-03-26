@@ -2,28 +2,51 @@
 #include <SDL.h>
 #include <iostream>
 
-Bird::Bird(int x, int y){
-  this->x = x;
-  this->y = y;
+Bird::Bird(float _x, float _y, float _v, float _g) {
+  this->x = _x;
+  this->y = _y;
+  this->v = _v;
+  this->g = _g; 
 }
 
-void Bird::fly(){
-  std::cout<<"Flying!" << std::endl;
+void Bird::flyUp(){
+  this->y = this-> y - this->v;
+  std::cout<<"Flying UP! " << std::endl;
 }
 
-void Bird::setX(int value){
+void Bird::flyDown(){
+  this->y = this-> y + this->g;  
+}
+
+void Bird::setX(float value){
   x = value;
 }
 
-
-void Bird::setY(int value){
+void Bird::setY(float value){
   y = value;
 }
 
-int Bird::getX(){
+void Bird::setV(float value){
+  v = value;
+}
+
+void Bird::setG(float value){
+  g = value;
+}
+
+
+float Bird::getX(){
   return x;
 }
 
-int Bird::getY(){
+float Bird::getY(){
   return y;
+}
+
+float Bird::getG(){
+  return g;
+}
+
+float Bird::getV(){
+  return v;
 }
