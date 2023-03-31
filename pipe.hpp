@@ -15,6 +15,7 @@ class Pipe{
     float getX();
     float getY();
     float getV();
-    SDL_Texture* pipeUp;
+    SDL_Texture* pipeTexture;
+
     
 };

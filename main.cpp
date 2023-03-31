@@ -36,8 +36,11 @@ int main()
   SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
 
   // Load in the pipe texture
-  SDL_Surface* pipeSurface = SDL_LoadBMP("pipeDown.bmp");
-
+  SDL_Surface* pipeSurface = SDL_LoadBMP("pipe_Up.bmp");
+  
+  SDL_Surface* bottomPipeSurface = SDL_LoadBMP("pipe_Down.bmp");
+  
+  
   // Did the bird surface load?
   if( birdSurface == NULL) {
     std::cout<<"Bird surface not loaded" << std::endl;
@@ -50,7 +53,7 @@ int main()
   }
 
   // Check if the pipe texture loaded
-  if (pipeSurface == NULL) {
+  if (pipeSurface == NULL)  {
     std::cout<<"Pipe surface not loaded" <<std::endl;
   }else{
     std::cout<<"Pipe surface loaded"<<std::endl;
@@ -60,9 +63,14 @@ int main()
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
   Pipe *Fpipe = new Pipe(100, 40, 30.5);
+  Pipe *Bpipe = new Pipe(100, 200, 30.5);
   
-  Fpipe->pipeUp = SDL_CreateTextureFromSurface(renderer, pipeSurface);
-
+  
+  
+  Fpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
+  
+  Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
+  
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
   flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
@@ -110,15 +118,23 @@ int main()
     pipeRect->y = Fpipe->getY();
     pipeRect->h = 114;
     pipeRect->w = 60;
-    
-    
+
+    SDL_Rect *pipeRect2 = new SDL_Rect();
+    pipeRect2->x = Bpipe->getX();
+    pipeRect2->y = Bpipe->getY();
+    pipeRect2->h = 114;
+    pipeRect2->w = 60;
+
 
     SDL_RenderClear(renderer);
         
     SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
 
-    SDL_RenderCopy(renderer, Fpipe->pipeUp,  NULL, pipeRect);
+    SDL_RenderCopyEx(renderer, Fpipe->pipeTexture,  NULL, pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
 
+    SDL_RenderCopy(renderer, Bpipe->pipeTexture,  NULL, pipeRect2);
+    
+    
     SDL_RenderPresent(renderer);
 
     
