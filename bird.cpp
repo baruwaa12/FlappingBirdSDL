@@ -11,7 +11,6 @@ Bird::Bird(float _x, float _y, float _v, float _g) {
 
 void Bird::flyUp(){
   this->y = this-> y - this->v;
-  std::cout<<"Flying UP! " << std::endl;
 }
 
 void Bird::flyDown(){

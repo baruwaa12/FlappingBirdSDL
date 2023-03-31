@@ -46,13 +46,14 @@ int main()
   }
 
   // New instance of my Bird Class
-  Bird* flappy = new Bird(50,50,10.5,0.3);
+  Bird* flappy = new Bird(50,50,30.5,0.1);
 
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
   flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
   SDL_Event event;
+  bool space_bar_hit = false;
   while (true) {
     // Listen for the space bar key event
     // If the Space Bar is pressed. Call the 
@@ -64,15 +65,22 @@ int main()
         switch (event.key.keysym.sym) 
         {
           case SDLK_SPACE:
-            std::cout<<"Space Bar Hit" << std::endl;
+            space_bar_hit = true;
             flappy->flyUp();
             break;
           default:
+          
             break;
         }
       }
       // Not a key down - need to move on to the game loop
       break;
+    }
+
+    if(space_bar_hit == false){
+      flappy->flyDown();
+    }else{
+      space_bar_hit = false;
     }
     
     int TimeStarted = SDL_GetTicks();
@@ -88,7 +96,6 @@ int main()
 
     SDL_RenderPresent(renderer);
 
-    flappy->flyDown();
     
   }
 
@@ -102,7 +109,12 @@ int main()
 // Todo
 // [ ] Commit in my new repo or overwrite an one of my old repos
 // [x] Get bird to drop by gravity 
-// [ ] When I tab on the space bar bird goes up
-// [ ] Pipe scroll on the screen movingfrom the right to left
-// { }
+// [x] When I tab on the space bar bird goes up
+// [ ] Pipe scroll on the screen moving from the right to left
+// [ ] Bird collision with pipes
+// [ ] Sound effects
+// [ ] In game timer
+// [ ] Make movement less janky
+// [ ] Start screen and game over
+// [ ] Buttons to restart
 // --------------------------------
