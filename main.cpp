@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <iostream>
 #include "bird.hpp"
+#include "pipe.hpp"
 
 
 // Load image as a texture
@@ -34,6 +35,9 @@ int main()
 
   SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
 
+  // Load in the pipe texture
+  SDL_Surface* pipeSurface = SDL_LoadBMP("pipeDown.bmp");
+
   // Did the bird surface load?
   if( birdSurface == NULL) {
     std::cout<<"Bird surface not loaded" << std::endl;
@@ -45,8 +49,19 @@ int main()
     std::cout<<"Bird surfaces loaded" << std::endl;
   }
 
+  // Check if the pipe texture loaded
+  if (pipeSurface == NULL) {
+    std::cout<<"Pipe surface not loaded" <<std::endl;
+  }else{
+    std::cout<<"Pipe surface loaded"<<std::endl;
+  }
+
   // New instance of my Bird Class
   Bird* flappy = new Bird(50,50,30.5,0.1);
+
+  Pipe *Fpipe = new Pipe(100, 40, 30.5);
+  
+  Fpipe->pipeUp = SDL_CreateTextureFromSurface(renderer, pipeSurface);
 
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
@@ -90,9 +105,19 @@ int main()
     birdReact->h = 32;
     birdReact->w = 32;
 
+    SDL_Rect *pipeRect = new SDL_Rect();
+    pipeRect->x = Fpipe->getX();
+    pipeRect->y = Fpipe->getY();
+    pipeRect->h = 114;
+    pipeRect->w = 60;
+    
+    
+
     SDL_RenderClear(renderer);
         
     SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
+
+    SDL_RenderCopy(renderer, Fpipe->pipeUp,  NULL, pipeRect);
 
     SDL_RenderPresent(renderer);
 
@@ -114,7 +139,7 @@ int main()
 // [ ] Bird collision with pipes
 // [ ] Sound effects
 // [ ] In game timer
-// [ ] Make movement less janky
+// [x] Make movement less janky
 // [ ] Start screen and game over
 // [ ] Buttons to restart
 // --------------------------------
