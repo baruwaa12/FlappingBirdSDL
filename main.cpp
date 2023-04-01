@@ -62,7 +62,7 @@ int main()
   // New instance of my Bird Class
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
-  Pipe *Fpipe = new Pipe(100, 40, 30.5);
+  Pipe *Fpipe = new Pipe(100, -300, 30.5);
   Pipe *Bpipe = new Pipe(100, 200, 30.5);
   
   
@@ -116,13 +116,13 @@ int main()
     SDL_Rect *pipeRect = new SDL_Rect();
     pipeRect->x = Fpipe->getX();
     pipeRect->y = Fpipe->getY();
-    pipeRect->h = 114;
+    pipeRect->h = 402;
     pipeRect->w = 60;
 
     SDL_Rect *pipeRect2 = new SDL_Rect();
     pipeRect2->x = Bpipe->getX();
     pipeRect2->y = Bpipe->getY();
-    pipeRect2->h = 114;
+    pipeRect2->h = 402;
     pipeRect2->w = 60;
 
 
