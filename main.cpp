@@ -105,6 +105,8 @@ int main()
     }else{
       space_bar_hit = false;
     }
+    Fpipe->moveLeft();
+    Bpipe->moveLeft();
     
     int TimeStarted = SDL_GetTicks();
     SDL_Rect* birdReact = new SDL_Rect();

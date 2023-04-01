@@ -12,6 +12,7 @@ class Pipe{
     void setX(float value);
     void setY(float value);
     void setV(float value);
+    void moveLeft();
     float getX();
     float getY();
     float getV();

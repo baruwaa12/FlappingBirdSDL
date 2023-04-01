@@ -8,6 +8,10 @@ Pipe::Pipe(float _x, float _y, float _v) {
 
 void Pipe::setX(float value){
   x = value;
+  if (x < 0) {
+    x = 480;
+  }
+  x -= v;
 }
 
 void Pipe::setY(float value){
@@ -18,8 +22,15 @@ void Pipe::setV(float value){
   v = value;
 }
 
-float Pipe::getX(){
+
+void Pipe::moveLeft(){
   x -= v;
+  if (x < -61) {
+    x = 680;
+  }
+}
+
+float Pipe::getX(){
   return x;
 }
 
