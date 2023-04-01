@@ -39,6 +39,10 @@ int main()
   SDL_Surface* pipeSurface = SDL_LoadBMP("pipe_Up.bmp");
   
   SDL_Surface* bottomPipeSurface = SDL_LoadBMP("pipe_Down.bmp");
+
+  SDL_Surface* pipeSurface2 = SDL_LoadBMP("pipe_Up.bmp");
+  
+  SDL_Surface* bottomPipeSurface2 = SDL_LoadBMP("pipe_Down.bmp");
   
   
   // Did the bird surface load?
@@ -62,14 +66,20 @@ int main()
   // New instance of my Bird Class
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
-  Pipe *Fpipe = new Pipe(100, -300, 0.05);
-  Pipe *Bpipe = new Pipe(100, 200, 0.05);
+  Pipe *Fpipe = new Pipe(670, -300, 0.05);
+  Pipe *Bpipe = new Pipe(670, 200, 0.05);
+
+  Pipe *Fpipe2 = new Pipe(Fpipe->getX() + 200, -300, 0.05);
+  Pipe *Bpipe2 = new Pipe(Fpipe->getX() + 200, 200, 0.05);
+
   
   
   
   Fpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
-  
   Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
+
+  Fpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface2);
+  Bpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface2);
   
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
@@ -108,6 +118,10 @@ int main()
     Fpipe->moveLeft();
     Bpipe->moveLeft();
     
+    Fpipe2->moveLeft();
+    Bpipe2->moveLeft();
+    
+    
     int TimeStarted = SDL_GetTicks();
     SDL_Rect* birdReact = new SDL_Rect();
     birdReact->x = flappy->getX();
@@ -128,18 +142,33 @@ int main()
     pipeRect2->w = 60;
 
 
+    SDL_Rect *pipeRect3 = new SDL_Rect();
+    pipeRect3->x = Fpipe2->getX();
+    pipeRect3->y = Fpipe2->getY();
+    pipeRect3->h = 402;
+    pipeRect3->w = 60;
+
+    SDL_Rect *pipeRect4 = new SDL_Rect();
+    pipeRect4->x = Bpipe2->getX();
+    pipeRect4->y = Bpipe2->getY();
+    pipeRect4->h = 402;
+    pipeRect4->w = 60;
+
+
     SDL_RenderClear(renderer);
         
     SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
 
+    // First pipe pair render
     SDL_RenderCopyEx(renderer, Fpipe->pipeTexture,  NULL, pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
-
     SDL_RenderCopy(renderer, Bpipe->pipeTexture,  NULL, pipeRect2);
-    
+
+    // Second pipe pair render
+    SDL_RenderCopyEx(renderer, Fpipe2->pipeTexture,  NULL, pipeRect3, 180, NULL, SDL_FLIP_VERTICAL);
+    SDL_RenderCopy(renderer, Bpipe2->pipeTexture,  NULL, pipeRect4);
     
     SDL_RenderPresent(renderer);
 
-    
   }
 
   SDL_DestroyWindow( window );
@@ -150,14 +179,20 @@ int main()
 }
 
 // Todo
-// [ ] Commit in my new repo or overwrite an one of my old repos
+// [x] Commit in my new repo or overwrite an one of my old repos
 // [x] Get bird to drop by gravity 
 // [x] When I tab on the space bar bird goes up
-// [ ] Pipe scroll on the screen moving from the right to left
+// [x] Pipe scroll on the screen moving from the right to left
+// [ ] Get multiple pipes to scroll across the window
+// [ ] Moving Background
+// [ ] Multi ring placement
 // [ ] Bird collision with pipes
-// [ ] Sound effects
+// [ ] Background sound
+// [ ] Sound for ring collision 
+// [ ] Ring disappers on collision
 // [ ] In game timer
 // [x] Make movement less janky
 // [ ] Start screen and game over
 // [ ] Buttons to restart
+//
 // --------------------------------

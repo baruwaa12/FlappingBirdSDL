@@ -7,11 +7,7 @@ Pipe::Pipe(float _x, float _y, float _v) {
 }
 
 void Pipe::setX(float value){
-  x = value;
-  if (x < 0) {
-    x = 480;
-  }
-  x -= v;
+  x = value; 
 }
 
 void Pipe::setY(float value){
