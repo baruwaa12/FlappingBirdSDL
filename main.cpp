@@ -62,8 +62,8 @@ int main()
   // New instance of my Bird Class
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
-  Pipe *Fpipe = new Pipe(100, -300, 30.5);
-  Pipe *Bpipe = new Pipe(100, 200, 30.5);
+  Pipe *Fpipe = new Pipe(100, -300, 0.05);
+  Pipe *Bpipe = new Pipe(100, 200, 0.05);
   
   
   

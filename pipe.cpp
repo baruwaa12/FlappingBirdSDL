@@ -19,6 +19,7 @@ void Pipe::setV(float value){
 }
 
 float Pipe::getX(){
+  x -= v;
   return x;
 }
 
