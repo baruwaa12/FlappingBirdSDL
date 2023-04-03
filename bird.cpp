@@ -1,6 +1,7 @@
 #include "bird.hpp"
 #include <SDL.h>
 #include <iostream>
+#include "pipe.hpp"
 
 Bird::Bird(float _x, float _y, float _v, float _g) {
   this->x = _x;
@@ -32,7 +33,6 @@ void Bird::setV(float value){
 void Bird::setG(float value){
   g = value;
 }
-
 
 float Bird::getX(){
   return x;

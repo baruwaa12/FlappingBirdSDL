@@ -35,6 +35,11 @@ int main()
 
   SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
 
+  // Load in the background texture
+  SDL_Surface* bgSurface = SDL_LoadBMP("background1.bmp");
+
+  SDL_Texture* background = NULL;
+
   // Load in the pipe texture
   SDL_Surface* pipeSurface = SDL_LoadBMP("pipe_Up.bmp");
   
@@ -80,9 +85,11 @@ int main()
   Pipe *Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.05);
 
   
+  background = SDL_CreateTextureFromSurface(renderer, bgSurface);
+  
   Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
   Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
-
+ 
   Tpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface2);
   Bpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface2);
 
@@ -131,6 +138,12 @@ int main()
 
     Tpipe3->moveLeft();
     Bpipe3->moveLeft();
+
+    SDL_Rect* bgRect = new SDL_Rect();
+    bgRect->x = 0;
+    bgRect->y = 0;
+    bgRect->h = 480;
+    bgRect->w = 640;
     
     
     int TimeStarted = SDL_GetTicks();
@@ -178,6 +191,9 @@ int main()
 
 
     SDL_RenderClear(renderer);
+
+    // Background render 
+    SDL_RenderCopy(renderer, background, NULL, bgRect);
         
     SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
 
@@ -207,9 +223,11 @@ int main()
 // Todo
 // [x] Commit in my new repo or overwrite an one of my old repos
 // [x] Get bird to drop by gravity 
+// [x] Make movement less janky
 // [x] When I tab on the space bar bird goes up
 // [x] Pipe scroll on the screen moving from the right to left
-// [ ] Get multiple pipes to scroll across the window
+// [x] Get multiple pipes to scroll across the window
+// [x] Randomise the height of the pipes
 // [ ] Moving Background
 // [ ] Multi ring placement
 // [ ] Bird collision with pipes
@@ -217,7 +235,6 @@ int main()
 // [ ] Sound for ring collision 
 // [ ] Ring disappers on collision
 // [ ] In game timer
-// [x] Make movement less janky
 // [ ] Start screen and game over
 // [ ] Buttons to restart
 //

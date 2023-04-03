@@ -18,11 +18,14 @@ void Pipe::setV(float value){
   v = value;
 }
 
+float Pipe::getV(){
+  return v;
+}
 
 void Pipe::moveLeft(){
   x -= v;
   if (x < -61) {
-    x = 680;
+    x = 680; 
   }
 }
 
@@ -34,6 +37,3 @@ float Pipe::getY(){
   return y; 
 }
 
-float Pipe::getV(){
-  return v;
-}
