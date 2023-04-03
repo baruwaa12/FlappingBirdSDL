@@ -22,4 +22,5 @@ class Bird{
     float getG();
     SDL_Texture* wingUpTexture;
     SDL_Texture* wingDownTexture;
+    SDL_Rect* birdReact;
 };

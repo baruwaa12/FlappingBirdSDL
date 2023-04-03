@@ -99,7 +99,7 @@ int main()
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
   flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
-
+  
   SDL_Event event;
   bool space_bar_hit = false;
   while (true) {
@@ -145,13 +145,7 @@ int main()
     bgRect->h = 480;
     bgRect->w = 640;
     
-    
-    int TimeStarted = SDL_GetTicks();
-    SDL_Rect* birdReact = new SDL_Rect();
-    birdReact->x = flappy->getX();
-    birdReact->y = flappy->getY();
-    birdReact->h = 32;
-    birdReact->w = 32;
+        int TimeStarted = SDL_GetTicks();
 
     SDL_Rect *pipeRect = new SDL_Rect();
     pipeRect->x = Tpipe->getX();
@@ -195,7 +189,7 @@ int main()
     // Background render 
     SDL_RenderCopy(renderer, background, NULL, bgRect);
         
-    SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, birdReact);
+    SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, flappy->birdReact);
 
     // First pipe pair render
     SDL_RenderCopyEx(renderer, Tpipe->pipeTexture,  NULL, pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
