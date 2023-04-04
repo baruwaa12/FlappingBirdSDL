@@ -75,6 +75,8 @@ int main()
   // New instance of my Bird Class
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
+  // TopPipe1 React
+
   Pipe *Tpipe = new Pipe(670, -300, 0.05);
   Pipe *Bpipe = new Pipe(670, 200, 0.05);
 
@@ -99,6 +101,8 @@ int main()
   flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
 
   flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
+
+  bool collisionDetected = false;
   
   SDL_Event event;
   bool space_bar_hit = false;
@@ -145,43 +149,7 @@ int main()
     bgRect->h = 480;
     bgRect->w = 640;
     
-        int TimeStarted = SDL_GetTicks();
-
-    SDL_Rect *pipeRect = new SDL_Rect();
-    pipeRect->x = Tpipe->getX();
-    pipeRect->y = Tpipe->getY();
-    pipeRect->h = 402;
-    pipeRect->w = 60;
-
-    SDL_Rect *pipeRect2 = new SDL_Rect();
-    pipeRect2->x = Bpipe->getX();
-    pipeRect2->y = Bpipe->getY();
-    pipeRect2->h = 402;
-    pipeRect2->w = 60;
-
-    SDL_Rect *pipeRect3 = new SDL_Rect();
-    pipeRect3->x = Tpipe2->getX();
-    pipeRect3->y = Tpipe2->getY();
-    pipeRect3->h = 402;
-    pipeRect3->w = 60;
-
-    SDL_Rect *pipeRect4 = new SDL_Rect();
-    pipeRect4->x = Bpipe2->getX();
-    pipeRect4->y = Bpipe2->getY();
-    pipeRect4->h = 402;
-    pipeRect4->w = 60;
-
-    SDL_Rect *pipeRect5 = new SDL_Rect();
-    pipeRect5->x = Tpipe3->getX();
-    pipeRect5->y = Tpipe3->getY();
-    pipeRect5->h = 402;
-    pipeRect5->w = 60;
-
-    SDL_Rect *pipeRect6 = new SDL_Rect();
-    pipeRect6->x = Bpipe3->getX();
-    pipeRect6->y = Bpipe3->getY();
-    pipeRect6->h = 402;
-    pipeRect6->w = 60;
+    int TimeStarted = SDL_GetTicks();
 
 
     SDL_RenderClear(renderer);
@@ -189,19 +157,19 @@ int main()
     // Background render 
     SDL_RenderCopy(renderer, background, NULL, bgRect);
         
-    SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, flappy->birdReact);
+    SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, flappy->birdRect);
 
     // First pipe pair render
-    SDL_RenderCopyEx(renderer, Tpipe->pipeTexture,  NULL, pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
-    SDL_RenderCopy(renderer, Bpipe->pipeTexture,  NULL, pipeRect2);
+    SDL_RenderCopyEx(renderer, Tpipe->pipeTexture,  NULL, Tpipe->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
+    SDL_RenderCopy(renderer, Bpipe->pipeTexture,  NULL, Bpipe->pipeRect);
 
     // Second pipe pair render
-    SDL_RenderCopyEx(renderer, Tpipe2->pipeTexture,  NULL, pipeRect3, 180, NULL, SDL_FLIP_VERTICAL);
-    SDL_RenderCopy(renderer, Bpipe2->pipeTexture,  NULL, pipeRect4);
+    SDL_RenderCopyEx(renderer, Tpipe2->pipeTexture,  NULL, Tpipe2->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
+    SDL_RenderCopy(renderer, Bpipe2->pipeTexture,  NULL, Bpipe2->pipeRect);
 
     // Third pipe pair render
-    SDL_RenderCopyEx(renderer, Tpipe3->pipeTexture,  NULL, pipeRect5, 180, NULL, SDL_FLIP_VERTICAL);
-    SDL_RenderCopy(renderer, Bpipe3->pipeTexture,  NULL, pipeRect6);
+    SDL_RenderCopyEx(renderer, Tpipe3->pipeTexture,  NULL, Tpipe3->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
+    SDL_RenderCopy(renderer, Bpipe3->pipeTexture,  NULL, Bpipe3->pipeRect);
     
     SDL_RenderPresent(renderer);
 

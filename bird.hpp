@@ -16,11 +16,12 @@ class Bird{
     void setY(float value);
     void setV(float value);
     void setG(float value);
+    bool collisionDetected();
     float getX();
     float getY();
     float getV();
     float getG();
     SDL_Texture* wingUpTexture;
     SDL_Texture* wingDownTexture;
-    SDL_Rect* birdReact;
+    SDL_Rect* birdRect;
 };
