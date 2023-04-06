@@ -3,7 +3,8 @@
 #include <iostream>
 #include "bird.hpp"
 #include "pipe.hpp"
-
+#include <list>
+#include <string>
 
 // Load image as a texture
 SDL_Texture *loadTexture(std::string path);
@@ -86,7 +87,18 @@ int main()
   Pipe *Tpipe3 = new Pipe(Tpipe2->getX() + 200, -300, 0.05);
   Pipe *Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.05);
 
-  
+
+  // Create a list to store the pipes - pushback adds elements to the list
+  std::list<Pipe> pipeList;
+  pipeList.push_back(*Tpipe);
+  pipeList.push_back(*Bpipe);
+  pipeList.push_back(*Tpipe2);
+  pipeList.push_back(*Bpipe2);
+  pipeList.push_back(*Tpipe3);
+  pipeList.push_back(*Bpipe3);
+
+ 
+
   background = SDL_CreateTextureFromSurface(renderer, bgSurface);
   
   Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
@@ -151,25 +163,17 @@ int main()
     
     int TimeStarted = SDL_GetTicks();
 
-    if (SDL_HasIntersection(flappy->birdRect, Tpipe->pipeRect)) {
-      collisionDetected = true;
-      std::cout<<"Collision Detected" << std::endl;
+    // For loop to iterate through list of pipes and check if they have collided
+    // with the pipe.
+    for (auto pipe = pipeList.begin(); pipe != pipeList.end(); ++pipe ) {
+        if (SDL_HasIntersection(flappy->birdRect, pipe->pipeRect)) {
+        collisionDetected = true;
+        std::cout<<"Collision Detected" << std::endl;
+        SDL_DestroyWindow( window );
+        SDL_Quit();
+      }
     }
-    if (SDL_HasIntersection(flappy->birdRect, Bpipe->pipeRect)) {
-      collisionDetected = true;
-    }
-    if (SDL_HasIntersection(flappy->birdRect, Tpipe2->pipeRect)) {
-      collisionDetected = true;
-    }
-    if (SDL_HasIntersection(flappy->birdRect, Bpipe2->pipeRect)) {
-      collisionDetected = true;
-    }
-    if (SDL_HasIntersection(flappy->birdRect, Tpipe3->pipeRect)) {
-      collisionDetected = true;
-    }
-    if (SDL_HasIntersection(flappy->birdRect, Bpipe3->pipeRect)) {
-      collisionDetected = true;
-    }
+
 
     SDL_RenderClear(renderer);
 
