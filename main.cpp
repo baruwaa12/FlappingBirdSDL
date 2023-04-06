@@ -151,6 +151,25 @@ int main()
     
     int TimeStarted = SDL_GetTicks();
 
+    if (SDL_HasIntersection(flappy->birdRect, Tpipe->pipeRect)) {
+      collisionDetected = true;
+      std::cout<<"Collision Detected" << std::endl;
+    }
+    if (SDL_HasIntersection(flappy->birdRect, Bpipe->pipeRect)) {
+      collisionDetected = true;
+    }
+    if (SDL_HasIntersection(flappy->birdRect, Tpipe2->pipeRect)) {
+      collisionDetected = true;
+    }
+    if (SDL_HasIntersection(flappy->birdRect, Bpipe2->pipeRect)) {
+      collisionDetected = true;
+    }
+    if (SDL_HasIntersection(flappy->birdRect, Tpipe3->pipeRect)) {
+      collisionDetected = true;
+    }
+    if (SDL_HasIntersection(flappy->birdRect, Bpipe3->pipeRect)) {
+      collisionDetected = true;
+    }
 
     SDL_RenderClear(renderer);
 
