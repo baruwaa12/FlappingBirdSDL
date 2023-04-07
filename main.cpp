@@ -3,6 +3,7 @@
 #include <iostream>
 #include "bird.hpp"
 #include "pipe.hpp"
+#include "ring.hpp"
 #include <list>
 #include <string>
 
@@ -36,6 +37,9 @@ int main()
 
   SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
 
+  // Load ring texture
+  SDL_Surface* ringSurface = SDL_LoadBMP("ring.bmp");
+
   // Load in the background texture
   SDL_Surface* bgSurface = SDL_LoadBMP("background1.bmp");
 
@@ -66,6 +70,13 @@ int main()
     std::cout<<"Bird surfaces loaded" << std::endl;
   }
 
+  // Did the ring surface load?
+  if( ringSurface == NULL) {
+    std::cout<<"Ring surface not loaded" << std::endl;
+  }else{
+    std::cout<<"Ring surface loaded" << std::endl;
+  }
+
   // Check if the pipe texture loaded
   if (pipeSurface == NULL)  {
     std::cout<<"Pipe surface not loaded" <<std::endl;
@@ -76,8 +87,10 @@ int main()
   // New instance of my Bird Class
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
-  // TopPipe1 React
+  // New instance of my ring Class
+  Ring* ring = new Ring(120,100);
 
+  // New instance of my Pipe Class
   Pipe *Tpipe = new Pipe(670, -300, 0.05);
   Pipe *Bpipe = new Pipe(670, 200, 0.05);
 
@@ -98,8 +111,10 @@ int main()
   pipeList.push_back(*Bpipe3);
 
  
-
+  // Create textures for for the sprites
   background = SDL_CreateTextureFromSurface(renderer, bgSurface);
+
+  ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
   
   Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
   Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
@@ -141,11 +156,13 @@ int main()
       break;
     }
 
+    // If the spacebar is not hit the bird will continue to drop
     if(space_bar_hit == false){
       flappy->flyDown();
     }else{
       space_bar_hit = false;
     }
+    // Move the pipes from right to left
     Tpipe->moveLeft();
     Bpipe->moveLeft();
     
@@ -160,11 +177,11 @@ int main()
     bgRect->y = 0;
     bgRect->h = 480;
     bgRect->w = 640;
-    
+
+    // Count the ticks at this point
     int TimeStarted = SDL_GetTicks();
 
-    // For loop to iterate through list of pipes and check if they have collided
-    // with the pipe.
+    // For loop to iterate through list of pipes and check if the the rectangles around them have collided with the birds rectangle.
     for (auto pipe = pipeList.begin(); pipe != pipeList.end(); ++pipe ) {
         if (SDL_HasIntersection(flappy->birdRect, pipe->pipeRect)) {
         collisionDetected = true;
@@ -193,6 +210,9 @@ int main()
     // Third pipe pair render
     SDL_RenderCopyEx(renderer, Tpipe3->pipeTexture,  NULL, Tpipe3->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
     SDL_RenderCopy(renderer, Bpipe3->pipeTexture,  NULL, Bpipe3->pipeRect);
+
+    // Render the ring
+    SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
     
     SDL_RenderPresent(renderer);
 
@@ -213,13 +233,12 @@ int main()
 // [x] Pipe scroll on the screen moving from the right to left
 // [x] Get multiple pipes to scroll across the window
 // [x] Randomise the height of the pipes
-// [ ] Moving Background
+// [x] Bird collision with pipes
 // [ ] Multi ring placement
-// [ ] Bird collision with pipes
+// [ ] Get rid of white background around bird
 // [ ] Background sound
 // [ ] Sound for ring collision 
-// [ ] Ring disappers on collision
-// [ ] In game timer
+// [ ] Ring disappears on collision
 // [ ] Start screen and game over
 // [ ] Buttons to restart
 //

@@ -13,8 +13,8 @@ class Pipe{
     void setY(float value);
     void setV(float value);
     void moveLeft();
-    // bool collidesWith(Bird bird);
     void varyY();
+    void randomY();
     float getX();
     float getY();
     float getV();

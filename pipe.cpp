@@ -35,6 +35,11 @@ void Pipe::moveLeft(){
   pipeRect->x = this->x;
 }
 
+void Pipe::randomY(){
+  y = rand() % 400;
+  pipeRect->y = this->y;
+}
+
 float Pipe::getX(){
   return x;
 }
