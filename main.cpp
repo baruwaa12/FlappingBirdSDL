@@ -38,7 +38,7 @@ int main()
   SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
 
   // Load ring texture
-  SDL_Surface* ringSurface = SDL_LoadBMP("ring.bmp");
+  SDL_Surface* ringSurface = SDL_LoadBMP("ring1.bmp");
 
   // Load in the background texture
   SDL_Surface* bgSurface = SDL_LoadBMP("background1.bmp");
@@ -88,7 +88,7 @@ int main()
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
   // New instance of my ring Class
-  Ring* ring = new Ring(120,100);
+  Ring* ring = new Ring(100,100);
 
   // New instance of my Pipe Class
   Pipe *Tpipe = new Pipe(670, -300, 0.05);
