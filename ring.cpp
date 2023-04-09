@@ -1,4 +1,6 @@
 #include "ring.hpp"
+#include <SDL.h>
+#include <iostream>
 
 Ring::Ring(float _x, float _y, float _v) {
   this->x = _x;
@@ -27,10 +29,18 @@ void Ring::setY(float value){
   y = value;
 }
 
+void Ring::setV(float value){
+  v = value;
+}
+
 float Ring::getX(){
   return x; 
 }
 
 float Ring::getY(){
   return y;
+}
+
+float Ring::getV(){
+  return v; 
 }

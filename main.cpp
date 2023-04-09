@@ -88,7 +88,7 @@ int main()
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
   // New instance of my ring Class
-  Ring* ring = new Ring(100,100);
+  Ring* ring = new Ring(130,130,0.05);
 
   // New instance of my Pipe Class
   Pipe *Tpipe = new Pipe(670, -300, 0.05);
@@ -130,6 +130,14 @@ int main()
   flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
   bool collisionDetected = false;
+
+  SDL_Rect* bgRect = new SDL_Rect();
+  bgRect->x = 0;
+  bgRect->y = 0;
+  bgRect->h = 480;
+  bgRect->w = 640;
+
+  
   
   SDL_Event event;
   bool space_bar_hit = false;
@@ -165,6 +173,9 @@ int main()
     // Move the pipes from right to left
     Tpipe->moveLeft();
     Bpipe->moveLeft();
+
+    // Move the rings from right to left
+    ring->moveLeft();
     
     Tpipe2->moveLeft();
     Bpipe2->moveLeft();
@@ -172,11 +183,7 @@ int main()
     Tpipe3->moveLeft();
     Bpipe3->moveLeft();
 
-    SDL_Rect* bgRect = new SDL_Rect();
-    bgRect->x = 0;
-    bgRect->y = 0;
-    bgRect->h = 480;
-    bgRect->w = 640;
+    
 
     // Count the ticks at this point
     int TimeStarted = SDL_GetTicks();
@@ -185,12 +192,16 @@ int main()
     for (auto pipe = pipeList.begin(); pipe != pipeList.end(); ++pipe ) {
         if (SDL_HasIntersection(flappy->birdRect, pipe->pipeRect)) {
         collisionDetected = true;
-        std::cout<<"Collision Detected" << std::endl;
         SDL_DestroyWindow( window );
         SDL_Quit();
       }
     }
 
+    // Collision Detection between bird and ring
+    if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
+      collisionDetected = true;
+      ring->ringRect->x = -(SCREEN_WIDTH);
+    }
 
     SDL_RenderClear(renderer);
 
@@ -214,16 +225,17 @@ int main()
     // Render the ring
     SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
     
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer); 
 
   }
-
+  
   SDL_DestroyWindow( window );
   
   SDL_Quit();
-
+  
   return 0;
-}
+ }
+
 
 // Todo
 // [x] Commit in my new repo or overwrite an one of my old repos
