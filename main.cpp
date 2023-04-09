@@ -201,6 +201,7 @@ int main()
     if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
       collisionDetected = true;
       ring->ringRect->x = -(SCREEN_WIDTH);
+      ring->randomY();
     }
 
     SDL_RenderClear(renderer);

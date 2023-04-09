@@ -13,6 +13,11 @@ Ring::Ring(float _x, float _y, float _v) {
   ringRect->w = 60;
 }
 
+void Ring::randomY(){
+  y = rand() % 400;
+  ringRect->y = this->y;
+}
+
 void Ring::moveLeft(){
   x -= v;
   if (x < -61) {

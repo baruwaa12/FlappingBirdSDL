@@ -13,6 +13,7 @@ class Ring {
     void setX(float value);
     void setY(float value);
     void setV(float value); 
+    void randomY();
     void moveLeft();
     float getX();
     float getY();
