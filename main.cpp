@@ -15,6 +15,9 @@ SDL_Renderer *gameRenderer = NULL;
 
 int main()
 {
+
+ 
+ 
   //start of colour loop var
   int r = 255;
   int g = 0;
@@ -39,6 +42,9 @@ int main()
 
   // Load ring texture
   SDL_Surface* ringSurface = SDL_LoadBMP("ring1.bmp");
+  SDL_Surface* ringSurface1 = SDL_LoadBMP("ring1.bmp");
+  SDL_Surface* ringSurface2 = SDL_LoadBMP("ring1.bmp");
+  SDL_Surface* ringSurface3 = SDL_LoadBMP("ring1.bmp");
 
   // Load in the background texture
   SDL_Surface* bgSurface = SDL_LoadBMP("background1.bmp");
@@ -88,7 +94,10 @@ int main()
   Bird* flappy = new Bird(50,50,30.5,0.1);
 
   // New instance of my ring Class
-  Ring* ring = new Ring(130,130,0.05);
+  Ring *ring = new Ring(90,130,0.00);
+  Ring *ring1 = new Ring(195,130,0.00);
+  Ring *ring2 = new Ring(280,130,0.00);
+  Ring *ring3 = new Ring(430,130,0.00);
 
   // New instance of my Pipe Class
   Pipe *Tpipe = new Pipe(670, -300, 0.05);
@@ -100,7 +109,14 @@ int main()
   Pipe *Tpipe3 = new Pipe(Tpipe2->getX() + 200, -300, 0.05);
   Pipe *Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.05);
 
+  // Create a list to store the rings 
+  std::list<Ring*> ringList;
+  ringList.push_back(ring);
+  ringList.push_back(ring1);
+  ringList.push_back(ring2);
+  ringList.push_back(ring3);
 
+  
   // Create a list to store the pipes - pushback adds elements to the list
   std::list<Pipe> pipeList;
   pipeList.push_back(*Tpipe);
@@ -115,6 +131,9 @@ int main()
   background = SDL_CreateTextureFromSurface(renderer, bgSurface);
 
   ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+  ring1->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface1);
+  ring2->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface2);
+  ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface3);
   
   Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
   Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
@@ -176,6 +195,9 @@ int main()
 
     // Move the rings from right to left
     ring->moveLeft();
+    ring1->moveLeft();
+    ring2->moveLeft();
+    ring3->moveLeft();
     
     Tpipe2->moveLeft();
     Bpipe2->moveLeft();
@@ -197,12 +219,7 @@ int main()
       }
     }
 
-    // Collision Detection between bird and ring
-    if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
-      collisionDetected = true;
-      ring->ringRect->x = -(SCREEN_WIDTH);
-      ring->randomY();
-    }
+    
 
     SDL_RenderClear(renderer);
 
@@ -225,11 +242,14 @@ int main()
 
     // Render the ring
     SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
+    SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
+    SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
+    SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
+    
     
     SDL_RenderPresent(renderer); 
 
   }
-  
   SDL_DestroyWindow( window );
   
   SDL_Quit();
