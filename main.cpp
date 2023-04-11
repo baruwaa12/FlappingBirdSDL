@@ -127,11 +127,11 @@ int main()
     if(ring->getIsVisible() == true)
     {
       ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+      ring1->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+      ring2->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+      ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
     }
   
-    ring1->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
-    ring2->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
-    ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
     
 
     Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
@@ -220,12 +220,18 @@ int main()
             }
         }
 
-        // Collision Detection between bird and ring, stop the velocity of the ring
-        if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
-            std::cout << "Bird has touched a ring" << std::endl;
-            ring->setVisible(false);
-        }
-
+        // Collision Detection between bird and ring, 
+      if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
+          std::cout << "Bird has touched a ring" << std::endl;
+          ring->setVisible(false); 
+      } else if(SDL_HasIntersection(flappy->birdRect, ring1->ringRect)) { 
+          ring1->setVisible(false);
+      } else if(SDL_HasIntersection(flappy->birdRect, ring2->ringRect)) {
+          ring2->setVisible(false);
+      } else if(SDL_HasIntersection(flappy->birdRect, ring3->ringRect)) {
+        ring3->setVisible(false);
+      }          
+      
         SDL_RenderClear(renderer);
 
         // Background render 
@@ -245,13 +251,11 @@ int main()
         SDL_RenderCopyEx(renderer, Tpipe3->pipeTexture, NULL, Tpipe3->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
         SDL_RenderCopy(renderer, Bpipe3->pipeTexture, NULL, Bpipe3->pipeRect);
 
-        // Render the ring
-        SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
-        // SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
-      
-        // SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
-        // SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
-        // SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
+        // Render the rings
+        SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);     
+        SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
+        SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
+        SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
 
 
         SDL_RenderPresent(renderer);
