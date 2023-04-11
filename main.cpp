@@ -101,14 +101,14 @@ int main()
 
 
     // New instance of my Pipe Class
-    Pipe* Tpipe = new Pipe(670, -300, 0.30);
-    Pipe* Bpipe = new Pipe(670, 200, 0.30);
+    Pipe* Tpipe = new Pipe(670, -300, 0.05);
+    Pipe* Bpipe = new Pipe(670, 200, 0.05);
 
-    Pipe* Tpipe2 = new Pipe(Tpipe->getX() + 200, -300, 0.30);
-    Pipe* Bpipe2 = new Pipe(Tpipe->getX() + 200, 200, 0.30);
+    Pipe* Tpipe2 = new Pipe(Tpipe->getX() + 200, -300, 0.05);
+    Pipe* Bpipe2 = new Pipe(Tpipe->getX() + 200, 200, 0.05);
 
-    Pipe* Tpipe3 = new Pipe(Tpipe2->getX() + 200, -300, 0.30);
-    Pipe* Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.30);
+    Pipe* Tpipe3 = new Pipe(Tpipe2->getX() + 200, -300, 0.05);
+    Pipe* Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.05);
 
 
     // Create a list to store the pipes - pushback adds elements to the list
@@ -124,7 +124,11 @@ int main()
     // Create textures for for the sprites
     background = SDL_CreateTextureFromSurface(renderer, bgSurface);
 
-    ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+    if(ring->getIsVisible() == true)
+    {
+      ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+    }
+  
     ring1->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
     ring2->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
     ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
@@ -144,6 +148,7 @@ int main()
     flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
     bool collisionDetected = false;
+    
 
     SDL_Rect* bgRect = new SDL_Rect();
     bgRect->x = 0;
@@ -215,10 +220,10 @@ int main()
             }
         }
 
-        // Collision Detection between bird and ring
+        // Collision Detection between bird and ring, stop the velocity of the ring
         if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
-            collisionDetected = true;
-            ring->ringRect->x = -(SCREEN_WIDTH);
+            std::cout << "Bird has touched a ring" << std::endl;
+            ring->setVisible(false);
         }
 
         SDL_RenderClear(renderer);
@@ -242,9 +247,11 @@ int main()
 
         // Render the ring
         SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
-        SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
-        SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
-        SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
+        // SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
+      
+        // SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
+        // SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
+        // SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
 
 
         SDL_RenderPresent(renderer);
@@ -268,7 +275,8 @@ int main()
 // [x] Get multiple pipes to scroll across the window
 // [x] Randomise the height of the pipes
 // [x] Bird collision with pipes
-// [ ] Multi ring placement
+// [x] Multi ring placement
+// [ ] Bird collision with rings
 // [ ] Get rid of white background around bird
 // [ ] Background sound
 // [ ] Sound for ring collision 

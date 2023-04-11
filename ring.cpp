@@ -11,6 +11,11 @@ Ring::Ring(float _x, float _y, float _v) {
   ringRect->y = _y;
   ringRect->h = 60;
   ringRect->w = 60;
+  this->isVisible = true;
+}
+
+bool Ring::collected() {
+  return true;
 }
 
 void Ring::randomY(){
@@ -22,6 +27,8 @@ void Ring::moveLeft(){
   x -= v;
   if (x < -61) {
     x = 660; 
+    // Make visible now
+    ringRect->y = y;
   }
   ringRect->x = this->x;
 }
@@ -48,4 +55,18 @@ float Ring::getY(){
 
 float Ring::getV(){
   return v; 
+}
+
+void Ring::setVisible(bool value){
+  this->isVisible = value;
+  if(this->isVisible == false){
+    ringRect->y = -100;
+  }
+  else{
+    ringRect->y = y;
+  }
+}
+
+bool Ring::getIsVisible(){
+  return this->isVisible;
 }
