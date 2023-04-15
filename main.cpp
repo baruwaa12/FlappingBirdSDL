@@ -43,6 +43,10 @@ int main(){
     SDL_Surface* mainMenuSurface = SDL_LoadBMP("startScreen.bmp");
     SDL_Texture* mainMenuTexture = SDL_CreateTextureFromSurface(renderer, mainMenuSurface);
 
+    // Load the game over surface 
+    SDL_Surface* gameOverSurface = SDL_LoadBMP("gameOver.bmp");
+    SDL_Texture* gameOverTexture = SDL_CreateTextureFromSurface(renderer, gameOverSurface);
+
     // Load start button surface
     SDL_Surface* startButtonSurface = SDL_LoadBMP("startButton.bmp");
     SDL_Texture* startButtonTexture = SDL_CreateTextureFromSurface(renderer, startButtonSurface);
@@ -179,6 +183,13 @@ int main(){
     menuRect->h = 480;
     menuRect->w = 640;
 
+    SDL_Rect* gameOverRect = new SDL_Rect();
+    gameOverRect->x = 0;
+    gameOverRect->y = 0;
+    gameOverRect->h = 480;
+    gameOverRect->w = 640;
+
+
     // Some comment
     SDL_Rect* startBRect = new SDL_Rect();
     startBRect->x = 200;
@@ -197,6 +208,7 @@ int main(){
     SDL_Event event;
     bool menuActive = true;
     bool space_bar_hit = false;
+    bool gameOver = false;
     bool quit = false;
 
     // Main menu display loop
@@ -286,6 +298,40 @@ int main(){
         for (auto pipe = pipeList.begin(); pipe != pipeList.end(); ++pipe) {
             if (SDL_HasIntersection(flappy->birdRect, pipe->pipeRect)) {
                 collisionDetected = true;
+                gameOver = true;
+
+                while (gameOver) {
+                  SDL_RenderCopy(renderer, gameOverTexture, NULL, gameOverRect);
+                  SDL_RenderCopy(renderer, startButtonTexture, NULL, startBRect);
+                  SDL_RenderCopy(renderer, quitButtonTexture, NULL, quitBRect);
+                  SDL_RenderPresent(renderer);
+
+                  while (SDL_PollEvent(&event)) {
+            // User requests quit
+            if (event.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+            // User clicks a button
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                // Get mouse position
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                if (x >= startBRect->x && x <= startBRect->x + startBRect->w && y >= startBRect->y && y <= startBRect->y + startBRect->h)
+                {
+                    menuActive = false;
+                    break;
+                }
+                if (x >= quitBRect->x && x <= quitBRect->x + quitBRect->w && y >= quitBRect->y && y <= quitBRect->y + quitBRect->h)
+                {
+                   SDL_DestroyWindow(window);
+                   SDL_Quit();
+                }  
+            }
+        }
+                  
+                }
                 SDL_DestroyWindow(window);
                 SDL_Quit();
             }
@@ -334,6 +380,9 @@ int main(){
         // Some comment
         SDL_RenderPresent(renderer);
     }
+
+    
+    
 
     SDL_DestroyWindow(window);
 
