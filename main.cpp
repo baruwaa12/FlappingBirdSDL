@@ -1,5 +1,8 @@
 
 //basic init function
+#define SDL_MAIN_HANDLED
+//basic init function
+
 #include <SDL.h>
 #include <iostream>
 #include "bird.hpp"
@@ -14,8 +17,7 @@ SDL_Texture* loadTexture(std::string path);
 // Window to render to
 SDL_Renderer* gameRenderer = NULL;
 
-int main()
-{
+int main(){
     // https://stackoverflow.com/questions/48723523/lnk2019-unresolved-external-symbol-c-sdl2-library
     //SDL_SetMainReady();
 
@@ -37,12 +39,18 @@ int main()
 
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    // Load the main menu surface a
+    // Load the main menu surface 
     SDL_Surface* mainMenuSurface = SDL_LoadBMP("startScreen.bmp");
-
-    // Startscreen converted to a texture
     SDL_Texture* mainMenuTexture = SDL_CreateTextureFromSurface(renderer, mainMenuSurface);
-    
+
+    // Load start button surface
+    SDL_Surface* startButtonSurface = SDL_LoadBMP("startButton.bmp");
+    SDL_Texture* startButtonTexture = SDL_CreateTextureFromSurface(renderer, startButtonSurface);
+
+    // Load start button surface
+    SDL_Surface* quitButtonSurface = SDL_LoadBMP("quit.bmp");
+    SDL_Texture* quitButtonTexture = SDL_CreateTextureFromSurface(renderer, quitButtonSurface);
+  
     // loading bird texture
     SDL_Surface* birdSurface = SDL_LoadBMP("wingUp.bmp");
 
@@ -106,17 +114,17 @@ int main()
     Ring* ring2 = new Ring(290, 130, 0.05);
     Ring* ring3 = new Ring(400, 130, 0.05);
 
-
     // New instance of my Pipe Class
     Pipe* Tpipe = new Pipe(670, -300, 0.05);
     Pipe* Bpipe = new Pipe(670, 200, 0.05);
 
+    // 
     Pipe* Tpipe2 = new Pipe(Tpipe->getX() + 200, -300, 0.05);
     Pipe* Bpipe2 = new Pipe(Tpipe->getX() + 200, 200, 0.05);
 
+    // 
     Pipe* Tpipe3 = new Pipe(Tpipe2->getX() + 200, -300, 0.05);
     Pipe* Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.05);
-
 
     // Create a list to store the pipes - pushback adds elements to the list
     std::list<Pipe> pipeList;
@@ -131,56 +139,100 @@ int main()
     // Create textures for for the sprites
     background = SDL_CreateTextureFromSurface(renderer, bgSurface);
 
-    if(ring->getIsVisible() == true)
+    if (ring->getIsVisible() == true)
     {
-      ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
-      ring1->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
-      ring2->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
-      ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+        ring->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+        ring1->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+        ring2->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
+        ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
     }
-  
-    
 
+    // 
     Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
     Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
 
+    // 
     Tpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface2);
     Bpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface2);
 
+    // 
     Tpipe3->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface3);
     Bpipe3->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface3);
 
+    // 
     flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
-
     flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
     bool collisionDetected = false;
     
-
+    // 
     SDL_Rect* bgRect = new SDL_Rect();
     bgRect->x = 0;
     bgRect->y = 0;
     bgRect->h = 480;
     bgRect->w = 640;
 
+    // Some comment
     SDL_Rect* menuRect = new SDL_Rect();
     menuRect->x = 0;
     menuRect->y = 0;
     menuRect->h = 480;
     menuRect->w = 640;
 
+    // Some comment
+    SDL_Rect* startBRect = new SDL_Rect();
+    startBRect->x = 200;
+    startBRect->y = 350;
+    startBRect->h = 49;
+    startBRect->w = 102;
 
+    // 
+    SDL_Rect* quitBRect = new SDL_Rect();
+    quitBRect->x = 400;
+    quitBRect->y = 350;
+    quitBRect->h = 88;
+    quitBRect->w = 108;
+
+    // Some comment
     SDL_Event event;
     bool menuActive = true;
     bool space_bar_hit = false;
+    bool quit = false;
 
+    // Main menu display loop
     while (menuActive == true) {
-       SDL_RenderCopy(renderer, mainMenuTexture, NULL, menuRect);
-       SDL_RenderPresent(renderer);
-    }  
+        SDL_RenderCopy(renderer, mainMenuTexture, NULL, menuRect);
+        SDL_RenderCopy(renderer, startButtonTexture, NULL, startBRect);
+        SDL_RenderCopy(renderer, quitButtonTexture, NULL, quitBRect);
+        SDL_RenderPresent(renderer);
 
+        while (SDL_PollEvent(&event)) {
+            // User requests quit
+            if (event.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+            // User clicks a button
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                // Get mouse position
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                if (x >= startBRect->x && x <= startBRect->x + startBRect->w && y >= startBRect->y && y <= startBRect->y + startBRect->h)
+                {
+                    menuActive = false;
+                    break;
+                }
+                if (x >= quitBRect->x && x <= quitBRect->x + quitBRect->w && y >= quitBRect->y && y <= quitBRect->y + quitBRect->h)
+                {
+                   SDL_DestroyWindow(window);
+                   SDL_Quit();
+                }  
+            }
+        }
+    }
 
-  
+    // Main game loop
     while (true) {
         // Listen for the space bar key event
         // If the Space Bar is pressed. Call the 
@@ -227,8 +279,6 @@ int main()
         Tpipe3->moveLeft();
         Bpipe3->moveLeft();
 
-       
-
         // Count the ticks at this point
         int TimeStarted = SDL_GetTicks();
 
@@ -242,17 +292,20 @@ int main()
         }
 
         // Collision Detection between bird and ring, 
-      if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
-          std::cout << "Bird has touched a ring" << std::endl;
-          ring->setVisible(false); 
-      } else if(SDL_HasIntersection(flappy->birdRect, ring1->ringRect)) { 
-          ring1->setVisible(false);
-      } else if(SDL_HasIntersection(flappy->birdRect, ring2->ringRect)) {
-          ring2->setVisible(false);
-      } else if(SDL_HasIntersection(flappy->birdRect, ring3->ringRect)) {
-        ring3->setVisible(false);
-      }          
-      
+        if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
+            std::cout << "Bird has touched a ring" << std::endl;
+            ring->setVisible(false);
+        }
+        else if (SDL_HasIntersection(flappy->birdRect, ring1->ringRect)) {
+            ring1->setVisible(false);
+        }
+        else if (SDL_HasIntersection(flappy->birdRect, ring2->ringRect)) {
+            ring2->setVisible(false);
+        }
+        else if (SDL_HasIntersection(flappy->birdRect, ring3->ringRect)) {
+            ring3->setVisible(false);
+        }
+
         SDL_RenderClear(renderer);
 
         // Background render 
@@ -273,14 +326,13 @@ int main()
         SDL_RenderCopy(renderer, Bpipe3->pipeTexture, NULL, Bpipe3->pipeRect);
 
         // Render the rings
-        SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);     
+        SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
         SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
         SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
         SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
 
-
+        // Some comment
         SDL_RenderPresent(renderer);
-
     }
 
     SDL_DestroyWindow(window);
@@ -288,44 +340,27 @@ int main()
     SDL_Quit();
 
     return 0;
+
 }
 
 
-// Todo
-// [x] Commit in my new repo or overwrite an one of my old repos
-// [x] Get bird to drop by gravity 
-// [x] Make movement less janky
-// [x] When I tab on the space bar bird goes up
-// [x] Pipe scroll on the screen moving from the right to left
-// [x] Get multiple pipes to scroll across the window
-// [x] Randomise the height of the pipes
-// [x] Bird collision with pipes
-// [x] Multi ring placement
-// [ ] Bird collision with rings
-// [ ] Get rid of white background around bird
-// [ ] Background sound
-// [ ] Sound for ring collision 
-// [ ] Ring disappears on collision
-// [ ] Start screen and game over
-// [ ] Buttons to restart
-//
-// --------------------------------
-
-// Todo
-// [x] Commit in my new repo or overwrite an one of my old repos
-// [x] Get bird to drop by gravity 
-// [x] Make movement less janky
-// [x] When I tab on the space bar bird goes up
-// [x] Pipe scroll on the screen moving from the right to left
-// [x] Get multiple pipes to scroll across the window
-// [x] Randomise the height of the pipes
-// [x] Bird collision with pipes
-// [ ] Multi ring placement
-// [ ] Get rid of white background around bird
-// [ ] Background sound
-// [ ] Sound for ring collision 
-// [ ] Ring disappears on collision
-// [ ] Start screen and game over
-// [ ] Buttons to restart
-//
-// --------------------------------
+    // Tasks Todo
+    // [x] Commit in my new repo or overwrite an one of my old repos
+    // [x] Get bird to drop by gravity 
+    // [x] Make movement less janky
+    // [x] When I tab on the space bar bird goes up
+    // [x] Pipe scroll on the screen moving from the right to left
+    // [x] Get multiple pipes to scroll across the window
+    // [x] Randomise the height of the pipes
+    // [x] Bird collision with pipes
+    // [x] Multi ring placement
+    // [x] Bird collision with rings
+    // [x] Ring disappears on collision
+    // [ ] Start screen and game over show total rings collected
+    // [ ] Buttons to restart
+    // [ ] Count rings and display them
+    // [ ] Background sound
+    // [ ] Sound for ring collision 
+    // [ ] Get rid of white background around bird
+    //
+    // --------------------------------
