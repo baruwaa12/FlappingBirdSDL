@@ -36,6 +36,13 @@ int main()
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+    // Load the main menu surface a
+    SDL_Surface* mainMenuSurface = SDL_LoadBMP("startScreen.bmp");
+
+    // Startscreen converted to a texture
+    SDL_Texture* mainMenuTexture = SDL_CreateTextureFromSurface(renderer, mainMenuSurface);
+    
     // loading bird texture
     SDL_Surface* birdSurface = SDL_LoadBMP("wingUp.bmp");
 
@@ -156,10 +163,24 @@ int main()
     bgRect->h = 480;
     bgRect->w = 640;
 
+    SDL_Rect* menuRect = new SDL_Rect();
+    menuRect->x = 0;
+    menuRect->y = 0;
+    menuRect->h = 480;
+    menuRect->w = 640;
 
 
     SDL_Event event;
+    bool menuActive = true;
     bool space_bar_hit = false;
+
+    while (menuActive == true) {
+       SDL_RenderCopy(renderer, mainMenuTexture, NULL, menuRect);
+       SDL_RenderPresent(renderer);
+    }  
+
+
+  
     while (true) {
         // Listen for the space bar key event
         // If the Space Bar is pressed. Call the 
