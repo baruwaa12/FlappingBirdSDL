@@ -17,7 +17,7 @@ SDL_Texture* loadTexture(std::string path);
 // Window to render to
 SDL_Renderer* gameRenderer = NULL;
 
-int main(){
+int main() {
     // https://stackoverflow.com/questions/48723523/lnk2019-unresolved-external-symbol-c-sdl2-library
     //SDL_SetMainReady();
 
@@ -54,7 +54,7 @@ int main(){
     // Load start button surface
     SDL_Surface* quitButtonSurface = SDL_LoadBMP("quit.bmp");
     SDL_Texture* quitButtonTexture = SDL_CreateTextureFromSurface(renderer, quitButtonSurface);
-  
+
     // loading bird texture
     SDL_Surface* birdSurface = SDL_LoadBMP("wingUp.bmp");
 
@@ -168,7 +168,7 @@ int main(){
     flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
     bool collisionDetected = false;
-    
+
     // 
     SDL_Rect* bgRect = new SDL_Rect();
     bgRect->x = 0;
@@ -188,7 +188,6 @@ int main(){
     gameOverRect->y = 0;
     gameOverRect->h = 480;
     gameOverRect->w = 640;
-
 
     // Some comment
     SDL_Rect* startBRect = new SDL_Rect();
@@ -237,15 +236,15 @@ int main(){
                 }
                 if (x >= quitBRect->x && x <= quitBRect->x + quitBRect->w && y >= quitBRect->y && y <= quitBRect->y + quitBRect->h)
                 {
-                   SDL_DestroyWindow(window);
-                   SDL_Quit();
-                }  
+                    SDL_DestroyWindow(window);
+                    SDL_Quit();
+                }
             }
         }
     }
 
     // Main game loop
-    while (true) {
+    while (!gameOver) {
         // Listen for the space bar key event
         // If the Space Bar is pressed. Call the 
         while (SDL_PollEvent(&event))
@@ -297,43 +296,60 @@ int main(){
         // For loop to iterate through list of pipes and check if the the rectangles around them have collided with the birds rectangle.
         for (auto pipe = pipeList.begin(); pipe != pipeList.end(); ++pipe) {
             if (SDL_HasIntersection(flappy->birdRect, pipe->pipeRect)) {
+                std::cout << "The Bird has hit the Pipe " << std::endl;
                 collisionDetected = true;
                 gameOver = true;
 
                 while (gameOver) {
-                  SDL_RenderCopy(renderer, gameOverTexture, NULL, gameOverRect);
-                  SDL_RenderCopy(renderer, startButtonTexture, NULL, startBRect);
-                  SDL_RenderCopy(renderer, quitButtonTexture, NULL, quitBRect);
-                  SDL_RenderPresent(renderer);
+                    // Dislay Main menu
+                    SDL_RenderCopy(renderer, gameOverTexture, NULL, gameOverRect);
+                    SDL_RenderCopy(renderer, startButtonTexture, NULL, startBRect);
+                    SDL_RenderCopy(renderer, quitButtonTexture, NULL, quitBRect);
+                    SDL_RenderPresent(renderer);
 
-                  while (SDL_PollEvent(&event)) {
-            // User requests quit
-            if (event.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            // User clicks a button
-            else if (event.type == SDL_MOUSEBUTTONDOWN)
-            {
-                // Get mouse position
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                if (x >= startBRect->x && x <= startBRect->x + startBRect->w && y >= startBRect->y && y <= startBRect->y + startBRect->h)
-                {
-                    menuActive = false;
-                    break;
+                    // Listening for user input
+                    while (SDL_PollEvent(&event)) {
+                        // User requests quit
+                        if (event.type == SDL_QUIT)
+                        {
+                            quit = true;
+                        }
+                        // User clicks a button
+                        else if (event.type == SDL_MOUSEBUTTONDOWN)
+                        {
+                            // Get mouse position
+                            std::cout << "Button Clicked after game over" << std::endl;
+                            int x, y;
+                            SDL_GetMouseState(&x, &y);
+                            if (x >= startBRect->x && x <= startBRect->x + startBRect->w && y >= startBRect->y && y <= startBRect->y + startBRect->h)
+                            {
+                                std::cout << "Restart requested after game over" << std::endl;
+                                SDL_RenderClear(renderer);
+                                gameOver = false;
+
+                                // Reset pipes
+                                Tpipe->setX(670);
+                                Bpipe->setX(670);
+
+                                Tpipe2->setX(Tpipe->getX() + 200);
+                                Bpipe2->setX(Tpipe->getX() + 200);
+
+                                Tpipe3->setX(Tpipe2->getX() + 200);
+                                Bpipe3->setX(Tpipe2->getX() + 200);
+                              
+                                break;
+                            }
+                            if (x >= quitBRect->x && x <= quitBRect->x + quitBRect->w && y >= quitBRect->y && y <= quitBRect->y + quitBRect->h)
+                            {
+                                std::cout << "Quit requested after game over" << std::endl;
+                                SDL_DestroyWindow(window);
+                                SDL_Quit();
+                            }
+                        }
+                    }
                 }
-                if (x >= quitBRect->x && x <= quitBRect->x + quitBRect->w && y >= quitBRect->y && y <= quitBRect->y + quitBRect->h)
-                {
-                   SDL_DestroyWindow(window);
-                   SDL_Quit();
-                }  
-            }
-        }
-                  
-                }
-                SDL_DestroyWindow(window);
-                SDL_Quit();
+                
+                gameOver = false;
             }
         }
 
@@ -381,9 +397,6 @@ int main(){
         SDL_RenderPresent(renderer);
     }
 
-    
-    
-
     SDL_DestroyWindow(window);
 
     SDL_Quit();
@@ -393,23 +406,24 @@ int main(){
 }
 
 
-    // Tasks Todo
-    // [x] Commit in my new repo or overwrite an one of my old repos
-    // [x] Get bird to drop by gravity 
-    // [x] Make movement less janky
-    // [x] When I tab on the space bar bird goes up
-    // [x] Pipe scroll on the screen moving from the right to left
-    // [x] Get multiple pipes to scroll across the window
-    // [x] Randomise the height of the pipes
-    // [x] Bird collision with pipes
-    // [x] Multi ring placement
-    // [x] Bird collision with rings
-    // [x] Ring disappears on collision
-    // [ ] Start screen and game over show total rings collected
-    // [ ] Buttons to restart
-    // [ ] Count rings and display them
-    // [ ] Background sound
-    // [ ] Sound for ring collision 
-    // [ ] Get rid of white background around bird
-    //
-    // --------------------------------
+// Tasks Todo
+// [x] Commit in my new repo or overwrite an one of my old repos
+// [x] Get bird to drop by gravity 
+// [x] Make movement less janky
+// [x] When I tab on the space bar bird goes up
+// [x] Pipe scroll on the screen moving from the right to left
+// [x] Get multiple pipes to scroll across the window
+// [x] Randomise the height of the pipes
+// [x] Bird collision with pipes
+// [x] Multi ring placement
+// [x] Bird collision with rings
+// [x] Ring disappears on collision
+// [ ] game over show total rings collected
+// [x] Buttons to restart
+// [ ] Count rings and display them
+// [ ] Background sound
+// [ ] Sound for ring collision 
+// [ ] Get rid of white background around bird
+//
+// --------------------------------
+
