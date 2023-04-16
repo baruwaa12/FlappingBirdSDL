@@ -146,7 +146,6 @@ int main() {
       pipeList.push_back(*pipes[i]);
     }
 
-
     // Create textures for for the sprites
     background = SDL_CreateTextureFromSurface(renderer, bgSurface);
 
@@ -285,21 +284,18 @@ int main() {
         else {
             space_bar_hit = false;
         }
-        // Move the pipes from right to left
-        Tpipe->moveLeft();
-        Bpipe->moveLeft();
 
-        // Move the rings from right to left
+
+        // Move the rings from right to left of screen
         ring->moveLeft();
         ring1->moveLeft();
         ring2->moveLeft();
         ring3->moveLeft();
 
-        Tpipe2->moveLeft();
-        Bpipe2->moveLeft();
-
-        Tpipe3->moveLeft();
-        Bpipe3->moveLeft();
+        // Call moveLeft() on each pipe in the list
+        for (auto& pipe : pipeList) {
+          pipe.moveLeft();
+        }
 
         // Count the ticks at this point
         int TimeStarted = SDL_GetTicks();
