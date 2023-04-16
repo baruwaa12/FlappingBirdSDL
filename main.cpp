@@ -8,8 +8,10 @@
 #include "bird.hpp"
 #include "pipe.hpp"
 #include "ring.hpp"
+#include "text.hpp"
 #include <list>
 #include <string>
+#include <SDL_ttf.h>
 
 // Load image as a texture
 SDL_Texture* loadTexture(std::string path);
@@ -33,18 +35,19 @@ int main() {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-    window = SDL_CreateWindow("Flappy Chicken", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
+    window = SDL_CreateWindow("Flapping Bird", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
     // Load the font file
-    TTF_Font *font = TTF_OpenFont("font.ttf", 16);
+    // TTF_Font *font = TTF_OpenFont("font.ttf", 16);
 
     // Assign color and the surface to draw on
-    SDL_Color color = {0, 0, 0};
-    SDL_Surface* text_Surface = TTF_RenderText_Solid(font, "Hello World", color);
+    // SDL_Color color = {0, 0, 0};
+    // SDL_Surface* textSurface = TTF_RenderText_Solid(font, "Hello World", color);
+    // SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
     // Load the main menu surface 
     SDL_Surface* mainMenuSurface = SDL_LoadBMP("startScreen.bmp");
@@ -120,7 +123,7 @@ int main() {
     Bird* flappy = new Bird(50, 50, 30.5, 0.1);
 
     // New instance of text class
-    Text* text = new Text(120, 150);
+    Text* counterText = new Text(120, 150);
 
     // New instances of my ring Class
     Ring* ring = new Ring(90, 130, 0.05);
@@ -138,12 +141,10 @@ int main() {
 
     // Create a list to store the pipes - pushback adds elements to the list
     std::list<Pipe> pipeList;
-    pipeList.push_back(*Tpipe);
-    pipeList.push_back(*Bpipe);
-    pipeList.push_back(*Tpipe2);
-    pipeList.push_back(*Bpipe2);
-    pipeList.push_back(*Tpipe3);
-    pipeList.push_back(*Bpipe3);
+    Pipe* pipes[] = {Tpipe, Bpipe, Tpipe2, Bpipe2, Tpipe3, Bpipe3};
+    for (int i = 0; i < 6; i++) {
+      pipeList.push_back(*pipes[i]);
+    }
 
 
     // Create textures for for the sprites
@@ -177,6 +178,13 @@ int main() {
     bgRect->y = 0;
     bgRect->h = 480;
     bgRect->w = 640;
+  
+    // Rectangle to draw the text
+    SDL_Rect* textRect = new SDL_Rect();
+    textRect->x = 200;
+    textRect->y = 100;
+    textRect->h = 100;
+    textRect->w = 100;
 
     // Rectangle to draw quit button
     SDL_Rect* menuRect = new SDL_Rect();
@@ -377,8 +385,9 @@ int main() {
         SDL_RenderCopy(renderer, background, NULL, bgRect);
       
         // Text render
-        SDL_RenderCopy(renderer, text, NULL, textRect);
-
+        // SDL_RenderCopy(renderer, textTexture, NULL, textRect);
+      
+        // Bird render
         SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, flappy->birdRect);
 
         // First pipe pair render
