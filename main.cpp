@@ -12,6 +12,7 @@
 #include <list>
 #include <string>
 #include <SDL_ttf.h>
+#include <vector>
 
 // Load image as a texture
 SDL_Texture* loadTexture(std::string path);
@@ -170,48 +171,24 @@ int main() {
     flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
     bool collisionDetected = false;
-
-    // Rectangle to draw background image
-    SDL_Rect* bgRect = new SDL_Rect();
-    bgRect->x = 0;
-    bgRect->y = 0;
-    bgRect->h = 480;
-    bgRect->w = 640;
   
+    // Rectangle to draw background image  
+    SDL_Rect* bgRect = new SDL_Rect{0, 0, 640, 480};
+
     // Rectangle to draw the text
-    SDL_Rect* textRect = new SDL_Rect();
-    textRect->x = 200;
-    textRect->y = 100;
-    textRect->h = 100;
-    textRect->w = 100;
+    SDL_Rect* textRect = new SDL_Rect{200, 100, 100, 100};
 
     // Rectangle to draw quit button
-    SDL_Rect* menuRect = new SDL_Rect();
-    menuRect->x = 0;
-    menuRect->y = 0;
-    menuRect->h = 480;
-    menuRect->w = 640;
+    SDL_Rect* menuRect = new SDL_Rect{0, 0, 640, 480};
 
-    // Rectangle to draw game over screen 
-    SDL_Rect* gameOverRect = new SDL_Rect();
-    gameOverRect->x = 0;
-    gameOverRect->y = 0;
-    gameOverRect->h = 480;
-    gameOverRect->w = 640;
+    // Rectangle to draw game over screen
+    SDL_Rect* gameOverRect = new SDL_Rect{0, 0, 640, 480};
 
     // Rectangle to draw start button
-    SDL_Rect* startBRect = new SDL_Rect();
-    startBRect->x = 200;
-    startBRect->y = 350;
-    startBRect->h = 49;
-    startBRect->w = 102;
+    SDL_Rect* startBRect = new SDL_Rect{200, 350, 102, 49};
 
     // Rectangle to draw quit button
-    SDL_Rect* quitBRect = new SDL_Rect();
-    quitBRect->x = 400;
-    quitBRect->y = 350;
-    quitBRect->h = 88;
-    quitBRect->w = 108;
+    SDL_Rect* quitBRect = new SDL_Rect{400, 350, 108, 88};
 
     // Important boolean conditions
     SDL_Event event;
@@ -358,54 +335,42 @@ int main() {
                 
                 gameOver = false;
             }
-        }
+        }  
 
-        // Collision Detection between bird and ring, 
-        if (SDL_HasIntersection(flappy->birdRect, ring->ringRect)) {
-            std::cout << "Bird has touched a ring" << std::endl;
-            ring->setVisible(false);
-        }
-        else if (SDL_HasIntersection(flappy->birdRect, ring1->ringRect)) {
-            ring1->setVisible(false);
-        }
-        else if (SDL_HasIntersection(flappy->birdRect, ring2->ringRect)) {
-            ring2->setVisible(false);
-        }
-        else if (SDL_HasIntersection(flappy->birdRect, ring3->ringRect)) {
-            ring3->setVisible(false);
-        }
 
         SDL_RenderClear(renderer);
 
         // Background render 
         SDL_RenderCopy(renderer, background, NULL, bgRect);
+
+        // Collision Detection between bird and ring, 
+        std::vector<Ring*> rings = { ring, ring1, ring2, ring3 };
+
+        for (auto r : rings) {
+          SDL_RenderCopy(renderer, r->ringTexture, NULL, r->ringRect);
+          if (SDL_HasIntersection(flappy->birdRect, r->ringRect)) {
+            std::cout << "Bird has touched a ring" << std::endl;
+            r->setVisible(false);
+              break; // break out of the loop after the first collision is detected
+          }
+        }
       
         // Text render
         // SDL_RenderCopy(renderer, textTexture, NULL, textRect);
-      
+
         // Bird render
-        SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, flappy->birdRect);
+          SDL_Texture* birdTexture = TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture;
+          SDL_RenderCopy(renderer, birdTexture, NULL, flappy->birdRect);
 
-        // First pipe pair render
-        SDL_RenderCopyEx(renderer, Tpipe->pipeTexture, NULL, Tpipe->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
-        SDL_RenderCopy(renderer, Bpipe->pipeTexture, NULL, Bpipe->pipeRect);
-
-        // Second pipe pair render
-        SDL_RenderCopyEx(renderer, Tpipe2->pipeTexture, NULL, Tpipe2->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
-        SDL_RenderCopy(renderer, Bpipe2->pipeTexture, NULL, Bpipe2->pipeRect);
-
-        // Third pipe pair render
-        SDL_RenderCopyEx(renderer, Tpipe3->pipeTexture, NULL, Tpipe3->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
-        SDL_RenderCopy(renderer, Bpipe3->pipeTexture, NULL, Bpipe3->pipeRect);
-
-        // Render the rings
-        SDL_RenderCopy(renderer, ring->ringTexture, NULL, ring->ringRect);
-        SDL_RenderCopy(renderer, ring1->ringTexture, NULL, ring1->ringRect);
-        SDL_RenderCopy(renderer, ring2->ringTexture, NULL, ring2->ringRect);
-        SDL_RenderCopy(renderer, ring3->ringTexture, NULL, ring3->ringRect);
-
-        // Some comment
-        SDL_RenderPresent(renderer);
+          // Render all pipe pairs
+          Pipe* pipes[] = { Tpipe, Bpipe, Tpipe2, Bpipe2, Tpipe3, Bpipe3 };
+           for (int i = 0; i < 6; i += 2) {
+              SDL_RenderCopyEx(renderer, pipes[i]->pipeTexture, NULL, pipes[i]->pipeRect, 180, NULL, SDL_FLIP_VERTICAL);
+              SDL_RenderCopy(renderer, pipes[i + 1]->pipeTexture, NULL, pipes[i + 1]->pipeRect);
+          }
+    
+          // Some comment
+          SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyWindow(window);
