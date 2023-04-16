@@ -39,6 +39,13 @@ int main() {
 
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
+    // Load the font file
+    TTF_Font *font = TTF_OpenFont("font.ttf", 16);
+
+    // Assign color and the surface to draw on
+    SDL_Color color = {0, 0, 0};
+    SDL_Surface* text_Surface = TTF_RenderText_Solid(font, "Hello World", color);
+
     // Load the main menu surface 
     SDL_Surface* mainMenuSurface = SDL_LoadBMP("startScreen.bmp");
     SDL_Texture* mainMenuTexture = SDL_CreateTextureFromSurface(renderer, mainMenuSurface);
@@ -112,21 +119,20 @@ int main() {
     // New instance of my Bird Class
     Bird* flappy = new Bird(50, 50, 30.5, 0.1);
 
-    // New instance of my ring Class
+    // New instance of text class
+    Text* text = new Text(120, 150);
+
+    // New instances of my ring Class
     Ring* ring = new Ring(90, 130, 0.05);
     Ring* ring1 = new Ring(180, 130, 0.05);
     Ring* ring2 = new Ring(290, 130, 0.05);
     Ring* ring3 = new Ring(400, 130, 0.05);
 
-    // New instance of my Pipe Class
+    // New instances of my Pipe Class
     Pipe* Tpipe = new Pipe(670, -300, 0.05);
     Pipe* Bpipe = new Pipe(670, 200, 0.05);
-
-    // 
     Pipe* Tpipe2 = new Pipe(Tpipe->getX() + 200, -300, 0.05);
     Pipe* Bpipe2 = new Pipe(Tpipe->getX() + 200, 200, 0.05);
-
-    // 
     Pipe* Tpipe3 = new Pipe(Tpipe2->getX() + 200, -300, 0.05);
     Pipe* Bpipe3 = new Pipe(Tpipe2->getX() + 200, 200, 0.05);
 
@@ -151,59 +157,56 @@ int main() {
         ring3->ringTexture = SDL_CreateTextureFromSurface(renderer, ringSurface);
     }
 
-    // 
     Tpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface);
     Bpipe->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface);
 
-    // 
     Tpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface2);
     Bpipe2->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface2);
 
-    // 
     Tpipe3->pipeTexture = SDL_CreateTextureFromSurface(renderer, pipeSurface3);
     Bpipe3->pipeTexture = SDL_CreateTextureFromSurface(renderer, bottomPipeSurface3);
-
-    // 
+ 
     flappy->wingUpTexture = SDL_CreateTextureFromSurface(renderer, birdSurface);
     flappy->wingDownTexture = SDL_CreateTextureFromSurface(renderer, birdSurface2);
 
     bool collisionDetected = false;
 
-    // 
+    // Rectangle to draw background image
     SDL_Rect* bgRect = new SDL_Rect();
     bgRect->x = 0;
     bgRect->y = 0;
     bgRect->h = 480;
     bgRect->w = 640;
 
-    // Some comment
+    // Rectangle to draw quit button
     SDL_Rect* menuRect = new SDL_Rect();
     menuRect->x = 0;
     menuRect->y = 0;
     menuRect->h = 480;
     menuRect->w = 640;
 
+    // Rectangle to draw game over screen 
     SDL_Rect* gameOverRect = new SDL_Rect();
     gameOverRect->x = 0;
     gameOverRect->y = 0;
     gameOverRect->h = 480;
     gameOverRect->w = 640;
 
-    // Some comment
+    // Rectangle to draw start button
     SDL_Rect* startBRect = new SDL_Rect();
     startBRect->x = 200;
     startBRect->y = 350;
     startBRect->h = 49;
     startBRect->w = 102;
 
-    // 
+    // Rectangle to draw quit button
     SDL_Rect* quitBRect = new SDL_Rect();
     quitBRect->x = 400;
     quitBRect->y = 350;
     quitBRect->h = 88;
     quitBRect->w = 108;
 
-    // Some comment
+    // Important boolean conditions
     SDL_Event event;
     bool menuActive = true;
     bool space_bar_hit = false;
@@ -372,6 +375,9 @@ int main() {
 
         // Background render 
         SDL_RenderCopy(renderer, background, NULL, bgRect);
+      
+        // Text render
+        SDL_RenderCopy(renderer, text, NULL, textRect);
 
         SDL_RenderCopy(renderer, TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture, NULL, flappy->birdRect);
 
@@ -418,12 +424,11 @@ int main() {
 // [x] Multi ring placement
 // [x] Bird collision with rings
 // [x] Ring disappears on collision
-// [ ] game over show total rings collected
 // [x] Buttons to restart
 // [ ] Count rings and display them
 // [ ] Background sound
 // [ ] Sound for ring collision 
 // [ ] Get rid of white background around bird
-//
+// [ ] game over show total rings collected
 // --------------------------------
 
