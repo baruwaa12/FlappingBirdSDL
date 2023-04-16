@@ -79,18 +79,17 @@ int main() {
 
     SDL_Texture* background = NULL;
 
-    // Load in the pipe texture
+    // Load in the pipe textures
     SDL_Surface* pipeSurface = SDL_LoadBMP("pipe_Up.bmp");
-
     SDL_Surface* bottomPipeSurface = SDL_LoadBMP("pipe_Down.bmp");
 
-    SDL_Surface* pipeSurface2 = SDL_LoadBMP("pipe_Up.bmp");
+    SDL_Surface* pipeSurface2 = pipeSurface;
 
-    SDL_Surface* bottomPipeSurface2 = SDL_LoadBMP("pipe_Down.bmp");
+    SDL_Surface* bottomPipeSurface2 = bottomPipeSurface;
 
-    SDL_Surface* pipeSurface3 = SDL_LoadBMP("pipe_Up.bmp");
+    SDL_Surface* pipeSurface3 = pipeSurface;
 
-    SDL_Surface* bottomPipeSurface3 = SDL_LoadBMP("pipe_Down.bmp");
+    SDL_Surface* bottomPipeSurface3 = bottomPipeSurface;
 
 
     // Did the bird surface load?
