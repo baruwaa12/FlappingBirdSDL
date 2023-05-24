@@ -8,6 +8,7 @@ class Bird {
     float g;
 
   public:
+    Bird(float x, float y, float v, float g);
     void flyUp();
     void flyDown();
     SDL_Texture* wingUpTexture;
