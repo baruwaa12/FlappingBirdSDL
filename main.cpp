@@ -1,10 +1,9 @@
+#undef main
 #include <SDL.h>
-#include "bird.hpp"
+#include "bird.h"
 #include <iostream>
 
-
-
-int main() {
+int main(int argc, char* args[]) {
 
     const static int SCREEN_HEIGHT = 480;
     const static int SCREEN_WIDTH = 640;
@@ -31,20 +30,28 @@ int main() {
     if (wingUpTexture == NULL) {
         std::cout << "wingUpTexture not loaded" << std::endl;
     }
+    else {
+        std::cout << "wingUpTexture loaded" << std::endl;
+    }
     if (wingDownTexture == NULL) {
         std::cout << "wingDownTexture has not loaded" << std::endl;
     }
+    else {
+        std::cout << "wingDownTexture loaded" << std::endl;
+    }
 
-    // Needed boolean conditions
+    // Needed conditions and variables
     SDL_Event event;
     bool gameActive = true;
+    int TimeStarted = SDL_GetTicks();
 
 
     // Create an instance of the bird
-    Bird* flappy = new Bird(50, 70, 30.5, 0.1);
+    Bird* flappy = new Bird(50.0, 70.00, 30.5, 0.1);
 
     // Start of the game loop
     while (gameActive) {
+
 
         // Event handler to check if SDL has been quit
         while (SDL_PollEvent(&event)) {
@@ -56,7 +63,9 @@ int main() {
         SDL_RenderClear(gameRenderer);
 
         // Clear the renderer 
+        SDL_Texture* birdTexture = TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture;
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
+
         SDL_RenderPresent(gameRenderer);
 
     }
