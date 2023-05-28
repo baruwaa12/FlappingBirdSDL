@@ -23,6 +23,3 @@ void Bird::flyDown() {
   this->y = this->y + this->g;
   this->BirdRect->y = this->BirdRect->y + this->g;
 }
-
-
-

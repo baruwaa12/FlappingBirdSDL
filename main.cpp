@@ -1,6 +1,6 @@
 #undef main
 #include <SDL.h>
-#include "bird.h"
+#include "bird.hpp"
 #include <iostream>
 
 int main(int argc, char* args[]) {
@@ -36,22 +36,21 @@ int main(int argc, char* args[]) {
     if (wingDownTexture == NULL) {
         std::cout << "wingDownTexture has not loaded" << std::endl;
     }
-    else {
+    else {                       
         std::cout << "wingDownTexture loaded" << std::endl;
     }
 
     // Needed conditions and variables
     SDL_Event event;
     bool gameActive = true;
-    int TimeStarted = SDL_GetTicks();
 
 
     // Create an instance of the bird
-    Bird* flappy = new Bird(50.0, 70.00, 30.5, 0.1);
+    Bird* flappy = new Bird(50.0, 70.00, 1.5, 1.05);
 
     // Start of the game loop
     while (gameActive) {
-
+        int TimeStarted = SDL_GetTicks();
 
         // Event handler to check if SDL has been quit
         while (SDL_PollEvent(&event)) {
@@ -60,11 +59,27 @@ int main(int argc, char* args[]) {
                 bool quit = true;
             }
         }
-        SDL_RenderClear(gameRenderer);
 
+        // Event handler to check for any space bar inputs
+
+        while (SDL_PollEvent(&event)) {
+          flappy->flyDown();
+            if (event.type == SDL_QUIT)
+            {
+                bool quit = true;
+            }
+            else if (event.type == SDLK_SPACE) {
+                flappy->flyUp();
+            } else if (event.type == N) {
+            }
+        }
+      
         // Clear the renderer 
+        SDL_RenderClear(gameRenderer);                   
         SDL_Texture* birdTexture = TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture;
+
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
+        
 
         SDL_RenderPresent(gameRenderer);
 
@@ -80,8 +95,8 @@ int main(int argc, char* args[]) {
 
 // Tasks Todo
 
-// [] Place bird on screen
-// [] Gravity on the bird
+// [x] Place bird on screenc
+// [x] Gravity on the bird
 // [] Bird movement with spacebar
 // [] Place background
 // [] Place pipes on screen 
