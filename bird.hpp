@@ -14,5 +14,6 @@ class Bird {
     SDL_Texture* wingUpTexture;
     SDL_Texture* wingDownTexture;
     SDL_Rect* BirdRect;
+
     
 };

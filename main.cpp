@@ -1,6 +1,6 @@
 #undef main
 #include <SDL.h>
-#include "bird.hpp"
+#include "bird.h"
 #include <iostream>
 
 int main(int argc, char* args[]) {
@@ -36,7 +36,7 @@ int main(int argc, char* args[]) {
     if (wingDownTexture == NULL) {
         std::cout << "wingDownTexture has not loaded" << std::endl;
     }
-    else {                       
+    else {
         std::cout << "wingDownTexture loaded" << std::endl;
     }
 
@@ -60,32 +60,20 @@ int main(int argc, char* args[]) {
             }
         }
 
-        // Event handler to check for any space bar inputs
-
-        while (SDL_PollEvent(&event)) {
-          flappy->flyDown();
-            if (event.type == SDL_QUIT)
-            {
-                bool quit = true;
-            }
-            else if (event.type == SDLK_SPACE) {
-                flappy->flyUp();
-            } else if (event.type == N) {
-            }
-        }
-      
+        flappy->flyDown();
+        
         // Clear the renderer 
-        SDL_RenderClear(gameRenderer);                   
+        SDL_RenderClear(gameRenderer);
         SDL_Texture* birdTexture = TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture;
 
-        SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
-        
+        // Render all animating objects (Birds, pipes etc)
+        //> SDL_RenderCopy(gameRenderer, flappy->currentTexture, NULL, flappy->BirdRect);
+        //> SDL_RenderCopy(gameRenderer, dog->currentTexture, NULL, dog->rect);
 
+        SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
         SDL_RenderPresent(gameRenderer);
 
     }
-
-
 
     SDL_DestroyWindow(window);
     SDL_Quit();
