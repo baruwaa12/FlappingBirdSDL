@@ -61,12 +61,16 @@ int main(int argc, char* args[]) {
             {
                 bool quit = true;
             }
+            else if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_SPACE) {
+                    flappy->jump();
+                }
+            }
         }
 
         auto currentTime = std::chrono::steady_clock::now();
         auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
         
-
         if (elapsedTime >= GRAVITY_INTERVAL_MS) {
             flappy->flyDown();
             startTime = std::chrono::steady_clock::now();
@@ -76,9 +80,7 @@ int main(int argc, char* args[]) {
         SDL_RenderClear(gameRenderer);
         // SDL_Texture* birdTexture = TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture;
 
-        // Render all animating objects (Birds, pipes etc)
-        //> SDL_RenderCopy(gameRenderer, flappy->currentTexture, NULL, flappy->BirdRect);
-        //> SDL_RenderCopy(gameRenderer, dog->currentTexture, NULL, dog->rect);
+   
 
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
         SDL_RenderPresent(gameRenderer);

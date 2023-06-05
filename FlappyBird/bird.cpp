@@ -19,6 +19,7 @@ Bird::Bird(float _x, float _y, float _v, float _g) {
 
 void Bird::jump() {
 	this->y = this->y - this->v;
+	this->BirdRect->y = this->BirdRect->y - this->v;
 }
 
  void Bird::flyDown() {
