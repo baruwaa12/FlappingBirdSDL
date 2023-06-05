@@ -9,7 +9,7 @@ private:
 
 public:
     Bird(float x, float y, float v, float g);
-    void flyUp();
+    void jump();
     void flyDown();
     SDL_Texture* wingUpTexture;
     SDL_Texture* wingDownTexture;

@@ -1,6 +1,8 @@
 #include "bird.h"
 #include <iostream>  
 #include <SDL.h>
+#include <chrono>
+
 
 Bird::Bird(float _x, float _y, float _v, float _g) {
 	this->x = _x;
@@ -15,28 +17,17 @@ Bird::Bird(float _x, float _y, float _v, float _g) {
 
 }
 
-
-void Bird::flyUp() {
-	// this->y = this->y - this->v;
-	
-	SDL_Event event;
-
-	while (SDL_PollEvent(&event)) {
-		if (event.type == SDLK_SPACE)
-		{
-			this->BirdRect->y = this->BirdRect->y - this->v;
-			std::cout << "Spacebar touched" << std::endl;
-		}
-	}
-
+void Bird::jump() {
+	this->y = this->y - this->v;
 }
 
-
-void Bird::flyDown() {
-	//this->y = this->y + this->g;
+ void Bird::flyDown() {
+	this->y = this->y + this->g;
 	this->BirdRect->y = this->BirdRect->y + this->g;
 
-}
+ }
+// Use a timer to regulate the bird to drop by gravity 
+
 
 
 

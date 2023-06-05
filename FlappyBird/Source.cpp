@@ -2,13 +2,14 @@
 #include <SDL.h>
 #include "bird.h"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 int main(int argc, char* args[]) {
 
     const static int SCREEN_HEIGHT = 480;
     const static int SCREEN_WIDTH = 640;
-
-
+    
     // Create the window 
     SDL_Window* window = SDL_CreateWindow("FlappyBird", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
 
@@ -43,14 +44,16 @@ int main(int argc, char* args[]) {
     // Needed conditions and variables
     SDL_Event event;
     bool gameActive = true;
+    bool birdActive = true;
+    const int GRAVITY_INTERVAL_MS = 16; // Gravity update interval in milliseconds
 
+    auto startTime = std::chrono::steady_clock::now();
 
     // Create an instance of the bird
     Bird* flappy = new Bird(50.0, 70.00, 1.5, 1.05);
 
     // Start of the game loop
     while (gameActive) {
-        int TimeStarted = SDL_GetTicks();
 
         // Event handler to check if SDL has been quit
         while (SDL_PollEvent(&event)) {
@@ -60,8 +63,14 @@ int main(int argc, char* args[]) {
             }
         }
 
-        // flappy->flyDown();
-        flappy->flyUp();
+        auto currentTime = std::chrono::steady_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
+        
+
+        if (elapsedTime >= GRAVITY_INTERVAL_MS) {
+            flappy->flyDown();
+            startTime = std::chrono::steady_clock::now();
+        }
 
         // Clear the renderer 
         SDL_RenderClear(gameRenderer);
@@ -73,6 +82,9 @@ int main(int argc, char* args[]) {
 
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
         SDL_RenderPresent(gameRenderer);
+
+        // Give time to the CPU
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     }
 
