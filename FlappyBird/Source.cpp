@@ -50,7 +50,8 @@ int main(int argc, char* args[]) {
     auto startTime = std::chrono::steady_clock::now();
 
     // Create an instance of the bird
-    Bird* flappy = new Bird(50.0, 70.00, 1.5, 1.05);
+    Bird* flappy = new Bird(50.0, 70.00, 2.8, 2.05);
+    flappy->StartTimer();
 
     // Start of the game loop
     while (gameActive) {
@@ -68,13 +69,7 @@ int main(int argc, char* args[]) {
             }
         }
 
-        auto currentTime = std::chrono::steady_clock::now();
-        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
-        
-        if (elapsedTime >= GRAVITY_INTERVAL_MS) {
-            flappy->flyDown();
-            startTime = std::chrono::steady_clock::now();
-        }
+        // flappy->updatePosition();
 
         // Clear the renderer 
         SDL_RenderClear(gameRenderer);
@@ -90,6 +85,7 @@ int main(int argc, char* args[]) {
 
     }
 
+    flappy->StopTimer();
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
@@ -100,7 +96,7 @@ int main(int argc, char* args[]) {
 
 // [x] Place bird on screenc
 // [x] Gravity on the bird
-// [] Bird movement with spacebar
+// [x] Bird movement with spacebar
 // [] Place background
 // [] Place pipes on screen 
 // [] Pipe movement
