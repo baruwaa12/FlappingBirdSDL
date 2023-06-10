@@ -16,7 +16,6 @@ public:
     Bird(float x, float y, float v, float g);
     void jump();
     void flyDown();
-    void updatePosition();
     void StartTimer();
     void StopTimer();
     SDL_Texture* wingUpTexture;

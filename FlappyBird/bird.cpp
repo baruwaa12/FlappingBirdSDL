@@ -14,7 +14,6 @@ Bird::Bird(float _x, float _y, float _v, float _g) {
 	this->BirdRect->y = _y;
 	this->BirdRect->h = 32;
 	this->BirdRect->w = 32;
-	this->lastGravityUpdate = std::chrono::steady_clock::now();
 	// timer->exec(everyTwoSecs, flyDown()) 
 }
 
@@ -47,20 +46,6 @@ void Bird::jump() {
 
  }
 
- void Bird::updatePosition() {
-
-	 const int GRAVITY_INTERVAL_MS = 16; // Gravity update interval in milliseconds
-
-	 auto currentTime = std::chrono::steady_clock::now();
-	 auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastGravityUpdate).count();
-
-	 if (elapsedTime >= GRAVITY_INTERVAL_MS) {
-		 flyDown();
-		 lastGravityUpdate = currentTime;
-	 }
-
-
- }
 // Use a timer to regulate the bird to drop by gravity 
 
 

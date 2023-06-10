@@ -1,6 +1,7 @@
 #undef main
 #include <SDL.h>
 #include "bird.h"
+#include "pipe.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -23,9 +24,15 @@ int main(int argc, char* args[]) {
     SDL_Surface* birdSurface = SDL_LoadBMP("wingUp.bmp");
     SDL_Surface* birdSurface2 = SDL_LoadBMP("wingDown.bmp");
 
+    // Load in the pipe texture
+    SDL_Surface* pipeSurface = SDL_LoadBMP("pipe_Up.bmp");
+
     // Create the bird textures
     SDL_Texture* wingUpTexture = SDL_CreateTextureFromSurface(gameRenderer, birdSurface);
     SDL_Texture* wingDownTexture = SDL_CreateTextureFromSurface(gameRenderer, birdSurface2);
+
+    // Create the pipe textures
+    SDL_Texture* pipeTexture = SDL_CreateTextureFromSurface(gameRenderer, pipeSurface);
 
     // Check if the textures have loaded 
     if (wingUpTexture == NULL) {
@@ -51,7 +58,12 @@ int main(int argc, char* args[]) {
 
     // Create an instance of the bird
     Bird* flappy = new Bird(50.0, 70.00, 2.8, 2.05);
+
+    // Create an instance of the pipe
+    Pipe* pipe1 = new Pipe(100.0, 200.00, 0.08);
+
     flappy->StartTimer();
+    pipe1->StartTimer();
 
     // Start of the game loop
     while (gameActive) {
@@ -69,15 +81,12 @@ int main(int argc, char* args[]) {
             }
         }
 
-        // flappy->updatePosition();
+     
 
         // Clear the renderer 
         SDL_RenderClear(gameRenderer);
-        // SDL_Texture* birdTexture = TimeStarted % 500 > 250 ? flappy->wingUpTexture : flappy->wingDownTexture;
-
-   
-
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
+        SDL_RenderCopy(gameRenderer, pipeTexture, NULL, pipe1->pipeRect);
         SDL_RenderPresent(gameRenderer);
 
         // Give time to the CPU
@@ -86,6 +95,7 @@ int main(int argc, char* args[]) {
     }
 
     flappy->StopTimer();
+    pipe1->StopTimer();
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
