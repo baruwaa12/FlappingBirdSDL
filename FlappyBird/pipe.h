@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <chrono>
+#include <vector>
 
 
 class Pipe {
@@ -14,6 +15,8 @@ public:
     void move();
     void setX(float value);
     void setY(float value);
+    void renderPipes(SDL_Renderer* gameRenderer,  std::vector<Pipe>& pipes);
+    void newPipe(std::vector<Pipe>& pipes);
     float getX();
     float getY();
     int getWidth() const;
