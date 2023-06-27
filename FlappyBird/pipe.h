@@ -21,6 +21,9 @@ public:
     float getY();
     int getWidth() const;
     int getHeight() const;
+    int getTopHeight() const;
+    int getBottomHeight() const;
+    int getBottomY() const;
     SDL_Texture* pipeTexture;
     SDL_Rect* pipeRect;
     

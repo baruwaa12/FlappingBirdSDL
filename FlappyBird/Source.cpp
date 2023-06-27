@@ -7,12 +7,27 @@
 #include <thread>
 #include <vector>
 
+const int PIPE_GAP = 200;
+const static int SCREEN_HEIGHT = 480;
+const static int SCREEN_WIDTH = 640;
+
+void renderPipes(SDL_Renderer* gameRenderer, std::vector<Pipe>& pipes, SDL_Texture* pipeTexture) {
+    for (auto& pipe : pipes) {
+        SDL_Rect upperPipeRect = { pipe.getX(), 0, pipe.getWidth(), pipe.getTopHeight() };
+        SDL_Rect lowerPipeRect = { pipe.getX(), pipe.getBottomY(), pipe.getWidth(), pipe.getBottomHeight()};
+
+        SDL_RenderCopy(gameRenderer, pipeTexture, NULL, &upperPipeRect);  // Render upper pipe
+        SDL_RenderCopy(gameRenderer, pipeTexture, NULL, &lowerPipeRect);  // Render lower pipe
+    }
+}
+
+void newPipe(std::vector<Pipe>& pipes) {
+    Pipe newPipe(SCREEN_WIDTH);
+    pipes.push_back(newPipe);
+
+}
+
 int main(int argc, char* args[]) {
-
-    const static int SCREEN_HEIGHT = 480;
-    const static int SCREEN_WIDTH = 640;
-
-
 
     // Create the window 
     SDL_Window* window = SDL_CreateWindow("FlappyBird", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
@@ -51,21 +66,29 @@ int main(int argc, char* args[]) {
         std::cout << "wingDownTexture loaded" << std::endl;
     }
 
-   
-
     // Needed conditions and variables
     SDL_Event event;
     bool gameActive = true;
     bool birdActive = true;
     const int GRAVITY_INTERVAL_MS = 16; // Gravity update interval in milliseconds
 
+    // Vector to store the pipes 
+    std::vector<Pipe> pipes;
+
+    const int INITIAL_PIPE_COUNT = 3;
+    const int PIPE_GAP = 200;
+
+    for (int i = 0; i < INITIAL_PIPE_COUNT; i++) {
+        Pipe pipe(SCREEN_WIDTH + i * PIPE_GAP);
+        pipes.push_back(pipe);
+    }
+    
     auto startTime = std::chrono::steady_clock::now();
 
     // Create an instance of the bird
     Bird* flappy = new Bird(50.0, 70.00, 2.8, 2.05);
 
     // Create an instance of the pipe
-    Pipe* pipe1 = new Pipe(100.0);
 
     flappy->StartTimer();
 
@@ -88,16 +111,14 @@ int main(int argc, char* args[]) {
                 }
             }
         }
-        std::vector<Pipe> pipes;
         for (auto& pipe : pipes) {
             pipe.move();
         }
 
-        
-
+ 
         // Spawn the new pipes
         if (pipeSpawnTimer >= pipeSpawnInterval) {
-            pipe1->newPipe(pipes);
+            newPipe(pipes);
             pipeSpawnTimer = 0;
         }
         else {
@@ -109,6 +130,7 @@ int main(int argc, char* args[]) {
         SDL_RenderClear(gameRenderer);
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
         
+        renderPipes(gameRenderer, pipes, pipeTexture);
 
         SDL_RenderPresent(gameRenderer);
 

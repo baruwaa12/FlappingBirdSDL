@@ -64,7 +64,20 @@ int Pipe::getWidth() const  {
 }
 
 int Pipe::getHeight() const {
-    return WINDOW_HEIGHT - y;
+    return SCREEN_HEIGHT - y;
 }
+
+int Pipe::getTopHeight() const {
+    return y;
+}
+
+int Pipe::getBottomHeight() const {
+    return SCREEN_HEIGHT - (y + PIPE_GAP);
+}
+
+int Pipe::getBottomY() const {
+    return y + PIPE_GAP;
+}
+
 
 
