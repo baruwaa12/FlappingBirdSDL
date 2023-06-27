@@ -1,4 +1,6 @@
 #pragma once
+#ifndef PIPE_H
+#define PIPE_H
 #include <SDL.h>
 #include <chrono>
 #include <vector>
@@ -8,6 +10,9 @@ class Pipe {
 private:
     float x;
     float y;
+    int topHeight;
+    int bottomHeight;
+
 
 
 public:
@@ -21,10 +26,18 @@ public:
     float getY();
     int getWidth() const;
     int getHeight() const;
-    int getTopHeight() const;
-    int getBottomHeight() const;
+    int getTopHeight() const {
+        return topHeight;
+    };
+    int getBottomHeight() const {
+        return bottomHeight;
+    };
+    void setBottomHeight(int height) { bottomHeight = height; }
+    void setTopHeight(int height) { topHeight = height; };
     int getBottomY() const;
     SDL_Texture* pipeTexture;
     SDL_Rect* pipeRect;
     
 };
+
+#endif //PIPE H

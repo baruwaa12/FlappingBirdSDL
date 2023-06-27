@@ -6,10 +6,15 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <random>
 
 const int PIPE_GAP = 200;
 const static int SCREEN_HEIGHT = 480;
 const static int SCREEN_WIDTH = 640;
+const int PIPE_WIDTH = 80;
+const int MIN_PIPE_HEIGHT = 50;
+const int MAX_PIPE_HEIGHT = 300;
+
 
 void renderPipes(SDL_Renderer* gameRenderer, std::vector<Pipe>& pipes, SDL_Texture* pipeTexture) {
     for (auto& pipe : pipes) {
@@ -18,6 +23,29 @@ void renderPipes(SDL_Renderer* gameRenderer, std::vector<Pipe>& pipes, SDL_Textu
 
         SDL_RenderCopy(gameRenderer, pipeTexture, NULL, &upperPipeRect);  // Render upper pipe
         SDL_RenderCopy(gameRenderer, pipeTexture, NULL, &lowerPipeRect);  // Render lower pipe
+    }
+}
+
+void updatePipes(std::vector<Pipe>& pipes) {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(MIN_PIPE_HEIGHT, MAX_PIPE_HEIGHT);
+
+
+    for (auto& pipe : pipes) {
+        pipe.move();
+
+        // Check if the pipe has moved off the screen
+        if (pipe.getX() < -PIPE_WIDTH) {
+            // Reset the pipes position when the rightmost side of the pipe is offscreen
+            pipe.setX(SCREEN_WIDTH);
+        }
+
+        int topHeight = dis(gen);
+        int bottomHeight = dis(gen);
+        pipe.setTopHeight(topHeight);
+        pipe.setBottomHeight(bottomHeight);
     }
 }
 
@@ -125,6 +153,7 @@ int main(int argc, char* args[]) {
             pipeSpawnTimer++;
         }
 
+        updatePipes(pipes);
        
         // Clear the renderer 
         SDL_RenderClear(gameRenderer);
@@ -145,6 +174,8 @@ int main(int argc, char* args[]) {
     return 0;
 
 }
+
+
 
 // Tasks Todo
 
