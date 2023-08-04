@@ -16,23 +16,17 @@ const int MIN_PIPE_HEIGHT = 50;
 const int MAX_PIPE_HEIGHT = 300;
 
 
-void renderPipes(SDL_Renderer* gameRenderer, std::vector<Pipe>& pipes, SDL_Texture* pipeTexture) {
+void renderPipes(SDL_Renderer* gameRenderer, std::vector<Pipe>& pipes) {
     for (auto& pipe : pipes) {
         SDL_Rect upperPipeRect = { pipe.getX(), 0, pipe.getWidth(), pipe.getTopHeight() };
-        SDL_Rect lowerPipeRect = { pipe.getX(), pipe.getBottomY(), pipe.getWidth(), pipe.getBottomHeight()};
+        SDL_Rect lowerPipeRect = { pipe.getX(), pipe.getBottomY(), pipe.getWidth(), pipe.getBottomHeight() };
 
-        SDL_RenderCopy(gameRenderer, pipeTexture, NULL, &upperPipeRect);  // Render upper pipe
-        SDL_RenderCopy(gameRenderer, pipeTexture, NULL, &lowerPipeRect);  // Render lower pipe
+        SDL_RenderFillRect(gameRenderer, &upperPipeRect); // Render upper pipe
+        SDL_RenderFillRect(gameRenderer, &lowerPipeRect); // Render lower pipe
     }
 }
 
 void updatePipes(std::vector<Pipe>& pipes) {
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dis(MIN_PIPE_HEIGHT, MAX_PIPE_HEIGHT);
-
-
     for (auto& pipe : pipes) {
         pipe.move();
 
@@ -41,18 +35,27 @@ void updatePipes(std::vector<Pipe>& pipes) {
             // Reset the pipes position when the rightmost side of the pipe is offscreen
             pipe.setX(SCREEN_WIDTH);
         }
-
-        int topHeight = dis(gen);
-        int bottomHeight = dis(gen);
-        pipe.setTopHeight(topHeight);
-        pipe.setBottomHeight(bottomHeight);
     }
 }
 
 void newPipe(std::vector<Pipe>& pipes) {
     Pipe newPipe(SCREEN_WIDTH);
-    pipes.push_back(newPipe);
 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(MIN_PIPE_HEIGHT, MAX_PIPE_HEIGHT);
+
+    int topHeight = dis(gen);
+    int bottomHeight = dis(gen);
+    newPipe.setTopHeight(topHeight);
+    newPipe.setBottomHeight(bottomHeight);
+
+    // Set the initial Y position of the pipes to a random value within the visible range
+    std::uniform_int_distribution<int> yPosDis(150, SCREEN_HEIGHT - 150); // Adjust this range as needed
+    int initialY = yPosDis(gen);
+    newPipe.setInitialY(initialY);
+
+    pipes.push_back(newPipe);
 }
 
 int main(int argc, char* args[]) {
@@ -87,6 +90,7 @@ int main(int argc, char* args[]) {
     else {
         std::cout << "wingUpTexture loaded" << std::endl;
     }
+
     if (wingDownTexture == NULL) {
         std::cout << "wingDownTexture has not loaded" << std::endl;
     }
@@ -94,17 +98,27 @@ int main(int argc, char* args[]) {
         std::cout << "wingDownTexture loaded" << std::endl;
     }
 
+    if (pipeTexture == NULL) {
+        std::cout << "pipeTexture has not loaded" << std::endl;
+    }
+    else {
+        std::cout << "PipeTexture loaded" << std::endl;
+    }
+
+
     // Needed conditions and variables
     SDL_Event event;
     bool gameActive = true;
     bool birdActive = true;
     const int GRAVITY_INTERVAL_MS = 16; // Gravity update interval in milliseconds
+    int pipeSpawnInterval = 200; // interval at which new pipes are spawned
+    int pipeSpawnTimer = 0; 
+
 
     // Vector to store the pipes 
     std::vector<Pipe> pipes;
 
     const int INITIAL_PIPE_COUNT = 3;
-    const int PIPE_GAP = 200;
 
     for (int i = 0; i < INITIAL_PIPE_COUNT; i++) {
         Pipe pipe(SCREEN_WIDTH + i * PIPE_GAP);
@@ -117,15 +131,11 @@ int main(int argc, char* args[]) {
     Bird* flappy = new Bird(50.0, 70.00, 2.8, 2.05);
 
     // Create an instance of the pipe
-
     flappy->StartTimer();
 
 
     // Start of the game loop
     while (gameActive) {
-
-        int pipeSpawnInterval = 200; // interval at which new pipes are spawned
-        int pipeSpawnTimer = 0;
 
         // Event handler to check if SDL has been quit
         while (SDL_PollEvent(&event)) {
@@ -139,19 +149,14 @@ int main(int argc, char* args[]) {
                 }
             }
         }
-        for (auto& pipe : pipes) {
-            pipe.move();
-        }
 
- 
         // Spawn the new pipes
         if (pipeSpawnTimer >= pipeSpawnInterval) {
             newPipe(pipes);
             pipeSpawnTimer = 0;
         }
-        else {
-            pipeSpawnTimer++;
-        }
+        
+        pipeSpawnTimer++;
 
         updatePipes(pipes);
        
@@ -159,12 +164,12 @@ int main(int argc, char* args[]) {
         SDL_RenderClear(gameRenderer);
         SDL_RenderCopy(gameRenderer, wingUpTexture, NULL, flappy->BirdRect);
         
-        renderPipes(gameRenderer, pipes, pipeTexture);
+        renderPipes(gameRenderer, pipes);
 
         SDL_RenderPresent(gameRenderer);
 
         // Give time to the CPU
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     }
 

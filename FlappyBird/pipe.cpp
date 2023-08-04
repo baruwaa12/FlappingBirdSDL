@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <iostream>
 #include <chrono>
+#include <random>
 
 
 
@@ -18,14 +19,15 @@ const int SCREEN_WIDTH = 640;
 
 Pipe::Pipe(int startX) {
     this->x = startX;
-    this->y = rand() % 300 + 50;
+    topHeight = 0;
+    bottomHeight = 0;
+    initialY = 0;
     
 }
 
 void Pipe::move() {
     x -= PIPE_SPEED; // Move the pipe to the left at this speed
 }
-
 
 void Pipe::setX(float value) {
     x = value;
@@ -35,21 +37,23 @@ void Pipe::setY(float value) {
     y = value;
 }
 
-void Pipe::renderPipes(SDL_Renderer *gameRenderer,  std::vector<Pipe>& pipes) {
-
-    for (auto& pipe : pipes) {
-        SDL_Rect upperPipeRect = { pipe.getX(), 0, pipe.getWidth(), pipe.getY() };
-        SDL_Rect lowerPipeRect = { pipe.getX(), pipe.getY() + PIPE_GAP, pipe.getWidth(), pipe.getHeight() };
-
-        SDL_RenderFillRect(gameRenderer, &upperPipeRect);  // Render upper pipe
-        SDL_RenderFillRect(gameRenderer, &lowerPipeRect);  // Render lower pipe
-    }
-}
 
 void Pipe::newPipe(std::vector<Pipe>& pipes) {
-    Pipe newPipe(SCREEN_WIDTH);  // Spawn a new pipe at the right side of the screen
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(50, SCREEN_HEIGHT - 50 - PIPE_GAP);
+
+    int topHeight = dis(gen);
+    int bottomHeight = SCREEN_HEIGHT - topHeight - PIPE_GAP;
+
+    Pipe newPipe(SCREEN_WIDTH); // Spawn a new pipe at the right side of the screen
+    newPipe.setTopHeight(topHeight);
+    newPipe.setBottomHeight(bottomHeight);
+    newPipe.setInitialY(0);
+
     pipes.push_back(newPipe);
 }
+
 
 float Pipe::getX() {
     return x;
@@ -64,12 +68,15 @@ int Pipe::getWidth() const  {
 }
 
 int Pipe::getHeight() const {
-    return SCREEN_HEIGHT - y;
+    return initialY + getTopHeight() + PIPE_GAP;
 }
 
+int Pipe::getTopY() const {
+    return initialY;
+}
 
 int Pipe::getBottomY() const {
-    return y + PIPE_GAP;
+    return initialY + PIPE_GAP;
 }
 
 

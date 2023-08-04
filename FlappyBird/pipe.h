@@ -7,12 +7,13 @@
 
 
 class Pipe {
+
 private:
     float x;
     float y;
     int topHeight;
     int bottomHeight;
-
+    int initialY;
 
 
 public:
@@ -32,6 +33,14 @@ public:
     int getBottomHeight() const {
         return bottomHeight;
     };
+    int getInitialY() const {
+        return initialY;
+    }
+    int setInitialY(int newY) {
+        initialY = newY;
+        return initialY;
+    }
+    int getTopY() const;
     void setBottomHeight(int height) { bottomHeight = height; }
     void setTopHeight(int height) { topHeight = height; };
     int getBottomY() const;
